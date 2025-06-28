@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="../assets/images/logo.svg" type="image/svg+xml">
+  <title>FireGuard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
+  <link rel="stylesheet" href="../css/pages/index.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-background">
+    <img class="blob" src="../assets/images/background.svg" alt="background" />
+  </div>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="logo">
+      <img src="../assets/images/logo.svg" alt="Logo" />
+      <span>FireGuard</span>
+    </div>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#reviews">Review</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="auth">
+      <a href="../pages/login.html" class="login"><i class="fas fa-sign-in-alt"></i> Login</a>
+      <a href="../pages/signup.html" class="signup"><i class="fas fa-user-plus"></i> Sign up</a>
+    </div>
+  </header>
+
+  <div class="hero-text">
+    <h1>FireGuard</h1>
+    <h3>Hệ thống Cảnh Báo Cháy Thông Minh</h3>
+    <p>Giải pháp cảnh báo cháy hiện đại, tích hợp công nghệ cảm biến và kết nối Internet</p>
+    <div class="buttons">
+      <button class="btn-primary"><i class="fas fa-play"></i><a href="../pages/login.html" class="login" style = "  text-decoration: none; color: white;"> Get Started</a></button>
+      <button class="btn-outline"><i class="fas fa-info-circle"></i><a href="#feature" class="login" style = "  text-decoration: none; color: #ff6e48;"> Learn More</a></button>
+    </div>
+  </div>
+
+  <div>
+    <img src="../assets/images/logo.svg" class="hero-img" alt="Fire Icon" />
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="features" id = "feature">
+  <h2 class="section-title"><i class="fas fa-cogs"></i> Tính năng</h2>
+  <div class="features-list">
+    <div class="feature" data-aos="fade-up">
+      <h3>Phát hiện<br/>đa cảm biến</h3>
+      <img src="../assets/icons/scan.svg" alt="Scan Icon"/>
+      <ul>
+        <li><i class="fas fa-burn"></i> Cảm biến khói MQ-2</li>
+        <li><i class="fas fa-thermometer-half"></i> Cảm biến nhiệt DS18B20</li>
+        <li><i class="fas fa-fire"></i> Cảm biến lửa KY-026</li>
+      </ul>
+    </div>
+    <div class="feature" data-aos="fade-up">
+      <h3>Cảnh báo<br/>tức thời</h3>
+      <img src="../assets/icons/alert.svg" alt="Alert Icon"/>
+      <ul>
+        <li><i class="fas fa-bell"></i> Còi hú</li>
+        <li><i class="fas fa-lightbulb"></i> Đèn LED</li>
+        <li><i class="fas fa-mobile-alt"></i> Thông báo về điện thoại</li>
+      </ul>
+    </div>
+    <div class="feature" data-aos="fade-up">
+      <h3>Kết nối Internet</h3>
+      <img src="../assets/icons/wifi.svg" alt="WiFi Icon"/>
+      <ul>
+        <li><i class="fas fa-wifi"></i> Hệ thống kết nối WiFi</li>
+        <li><i class="fas fa-globe"></i> Gửi dữ liệu về website</li>
+        <li><i class="fas fa-cloud"></i> Lưu trữ trên Cloud</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Why Us -->
+<section class="why-us" data-aos="fade-up">
+  <h2 class="section-title"><i class="fas fa-question-circle"></i> Vì sao chọn chúng tôi?</h2>
+  <div class="reasons">
+    <div class="reason-text">
+      <i class="fas fa-bolt fa-3x"></i>
+      <br/>Phát hiện nhanh<br/>Phản ứng kịp thời
+    </div>
+    <div class="reason-text">
+      <i class="fas fa-fire-extinguisher fa-3x"></i>
+      <br/>Tự động dập cháy
+    </div>
+    <div class="reason-text">
+      <i class="fas fa-microchip fa-3x"></i>
+      <br/>Kết nối ổn định với ESP32<br/>Hoạt động liên tục
+    </div>
+  </div>
+  <div class="reasons">
+    <div class="reason-text">
+      <i class="fas fa-database fa-3x"></i>
+      <br/>Lưu trữ đám mây<br/>Không lo mất dữ liệu
+    </div>
+    <div class="reason-text">
+      <i class="fas fa-robot fa-3x"></i>
+      <br/>Hoạt động hoàn toàn tự động<br/>Không cần can thiệp thủ công
+    </div>
+    <div class="reason-text">
+      <i class="fas fa-tools fa-3x"></i>
+      <br/>Cài đặt linh hoạt<br/>Dễ dàng tuỳ chỉnh theo nhu cầu
+    </div>
+  </div>
+</section>
+
+<!-- Client Reviews -->
+<section id = "reviews" data-aos="fade-up">
+  <h2 class="section-title"><i class="fas fa-comment-dots"></i> Phản hồi khách hàng</h2>
+  <div class="reviews">
+    <div class="review">
+      <p class="review-stars">⭐️⭐️⭐️⭐️</p>
+      <p>FireGuard giúp tôi yên tâm hơn trong công việc giám sát nhà xưởng.</p>
+      <p><strong>Nguyễn Văn A</strong><br/>Kỹ sư</p>
+    </div>
+    <div class="review">
+      <p class="review-stars">⭐️⭐️⭐️⭐️</p>
+      <p>Thiết bị nhỏ gọn, dễ lắp đặt, cảnh báo nhanh chóng.</p>
+      <p><strong>Trần Thị B</strong><br/>Giáo viên</p>
+    </div>
+    <div class="review">
+      <p class="review-stars">⭐️⭐️⭐️⭐️</p>
+      <p>Dữ liệu lưu trữ ổn định, dễ dàng theo dõi qua web.</p>
+      <p><strong>Lê Văn C</strong><br/>Chủ doanh nghiệp</p>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<footer class="footer" id = "contact">
+  <div class="contact-form">
+    <h3><i class="fas fa-envelope"></i> Nhận thông tin mới</h3>
+    <input type="email" placeholder="Your Email"/>
+    <button><i class="fas fa-paper-plane"></i> Subscribe</button>
+  </div>
+  <div class="contact-info">
+    <h3><i class="fas fa-phone"></i> Liên hệ</h3>
+    <p><i class="fas fa-envelope"></i> contact@company.com</p>
+    <p><i class="fas fa-phone-alt"></i> (xx) xxxx-xxxx</p>
+    <p><i class="fas fa-map-marker-alt"></i> 227 Nguyen Van Cu St</p>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init({
+    duration: 1000, 
+  });
+</script>
+
+</body>
+</html>

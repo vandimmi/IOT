@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="../assets/images/logo.svg" type="image/svg+xml">
+  <title>Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="../css/pages/dashboard.css" />
+  <link rel="stylesheet" href="../css/components/header.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src = "../js/main.js"></script>
+</head>
+
+<body>
+  <div id="header-placeholder"></div>
+  <!-- Main content -->
+  <div class="main">
+    <h2></br></h2>
+    <div class="cards">
+      <div class="card">
+        <i class="fa-solid fa-smog"></i>
+        <div class="value">350</div>          <!-- Value for smoke in ppm -->
+        <div class="label">Khói</div>
+      </div>
+      <div class="card">
+        <i class="fa-solid fa-temperature-half"></i>
+        <div class="value">23.5</div>       <!-- Value for temperature in °C -->
+        <div class="label">Nhiệt độ</div>
+      </div>
+      <div class="card">
+        <i class="fa-solid fa-lightbulb"></i>
+        <div class="value">ON</div>       <!-- Value for LED status -->
+        <div class="label">LED</div>
+      </div>
+      <div class="card">
+        <i class="fa-solid fa-bell-slash"></i>
+        <div class="value">OFF</div>    <!-- Value for alarm status -->
+        <div class="label">Báo động</div>
+      </div>
+      <div class="card">
+        <i class="fa-solid fa-water"></i>
+        <div class="value">OFF</div>  <!-- Value for water valve status -->
+        <div class="label">Vòi nước</div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="chart-container">
+        <h3>Thống kê</h3>
+        <canvas id="myChart" height="100"></canvas>
+      </div>
+      <div class="water-container">
+        <h3>Bình nước</h3>
+        <div class="gauge-container">
+          <div class="water" id="water" style="height: 60%;"></div>
+          <div class="gauge-text" id="gauge-text">60%</div>
+        </div>
+      </div>
+    </div>
+
+    <h3></br>Thông báo hệ thống</h3>
+    <table>
+      <tr>
+        <th>No</th>
+        <th>ID</th>
+        <th>Date</th>
+        <th>Notification</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>#12594</td>
+        <td>Oct 15, 2023</td>
+        <td>Phát hiện có cháy</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>#12595</td>
+        <td>Oct 16, 2023</td>
+        <td>Bình nước thấp</td>
+      </tr>
+    </table>
+  </div>
+
+  <script src = "../js/pages/dashboard.js"></script>
+</body>
+
+</html>

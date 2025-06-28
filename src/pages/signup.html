@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="../assets/images/logo.svg" type="image/svg+xml">
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="../css/pages/signin.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+
+  <div class="back-button">
+    <a href="../pages/index.html">
+      Back
+    </a>
+  </div>
+
+  <div class="form-container">
+    <div class="logo">
+      <img src="../assets/images/logo.svg" alt="Logo"/>
+    </div>
+    <h2>Sign up</h2>
+    <p class="subtext">Already have an account? <a href="../pages/login.html">Log in</a></p>
+
+    <form>
+      <div class="form-group">
+        <label for="name">What should we call you?</label>
+        <input type="text" id="name" placeholder="Enter your profile name" />
+      </div>
+
+      <div class="form-group">
+        <label for="email">What’s your email?</label>
+        <input type="email" id="email" placeholder="Enter your email address" />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Create a password</label>
+        <input type="password" id="password" placeholder="Enter your password" />
+        <p class="password-note">Use 8 or more characters with a mix of letters, numbers & symbols</p>
+      </div>
+
+      <p class="agreement">
+        By creating an account, you agree to the <a href="#">Terms of use</a> and <a href="#">Privacy Policy</a>.
+      </p>
+
+      <button class="submit-btn" disabled>Sign up</button>
+    </form>
+
+    <p class="or">OR Continue with</p>
+
+    <div class="social-buttons">
+      <div class="social-button">
+        <img src="https://api.iconify.design/logos:facebook.svg" width="20" alt="Facebook"/>
+        Facebook
+      </div>
+      <div class="social-button">
+        <img src="https://api.iconify.design/logos:google-icon.svg" width="20" alt="Google"/>
+        Google
+      </div>
+      <div class="social-button">
+        <img src="https://api.iconify.design/mdi:email.svg" width="20" alt="Email"/>Email
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,56 +1,45 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Montserrat'
-}
-
 body {
-    font-family: "Montserrat";
-    background: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 20px;
-    min-height: 80vh;
+  min-height: 80vh;
 }
 
-h3, p{
+h3,
+p {
   text-align: center;
 }
 
-h2 {
-    text-align: center;
-    font-size: 24px;
-    margin-bottom: 4px;
+.logo img {
+  width: 56px;
+  margin-right: 4px;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .profile-card {
   width: 100%;
-  min-width: 500px;     /* hoặc giá trị phù hợp */
+  min-width: 500px;
   margin: 0 auto;
 }
+
 .profile-card img {
   display: block;
   margin-left: auto;
   margin-right: auto;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
 }
-    .profile-card img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
 
-    .profile-card h3 {
-      margin: 10px 0 5px;
-    }
+.profile-card h3 {
+  margin: 10px 0 5px;
+}
 
-    .profile-card p {
-      margin: 0;
-      color: #888;
-      font-size: 14px;
-    }
+.profile-card p {
+  margin: 0;
+  color: #888;
+  font-size: 14px;
+}
+
 .profile-container {
   position: relative;
   display: inline-block;
@@ -65,87 +54,23 @@ h2 {
   gap: 5px;
 }
 
-.arrow {
-  font-size: 1em;
+.email-section {
+  text-align: left;
+  margin: 20px 0;
 }
 
-.profile-dropdown {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: 40px;
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  min-width: 150px;
-  box-shadow: 0px 2px 8px rgba(0,0,0,0.15);
-  z-index: 10;
-}
-
-.profile-dropdown a {
+.email-item {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 15px;
-  text-decoration: none;
-  color: #333;
+  background: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+  margin-bottom: 10px;
 }
 
-.profile-dropdown a:hover {
-  background-color: #f2f2f2;
-}
-
-.profile-container.open .arrow {
-  transform: rotate(180deg);
-}
-.form-group {
-  flex: 1;
-    margin-bottom: 20px;
-}
-
-label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 6px;
-    font-size: 14px;
-}
-
-input {
-    width: 100%;
-    padding: 12px;
-    font-size: 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-sizing: border-box;
-}
-    .email-section {
-      text-align: left;
-      margin: 20px 0;
-    }
-
-    .email-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: #fff;
-      padding: 10px;
-      border-radius: 8px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.05);
-      margin-bottom: 10px;
-    }
-
-    .email-item i {
-      color: #ff5722;
-      font-size: 18px;
-    }
-.save-btn {
-    width: 100%;
-    padding: 14px;
-    font-size: 16px;
-    border: none;
-    border-radius: 9999px;
-    background: #ff5722;
-    color: #aaa;
-    cursor: pointer;
-    margin-top: 20px;
+.email-item i {
+  color: #ff5722;
+  font-size: 18px;
 }

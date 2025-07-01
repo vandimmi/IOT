@@ -1,212 +1,102 @@
-    * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Montserrat'
-}
 body {
-    font-family: "Montserrat";
-    background: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 20px;
-    min-height: 80vh;
-}
-.navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: white;
-    z-index: 100;
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 50px 10px 50px;
-    align-items: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.navbar nav a,
-.auth a {
-    margin: 0 10px;
-    text-decoration: none;
-    color: black;
-}
-
-.logo {
-    font-size: 2rem;
-    font-weight: bold;
+  min-height: 80vh;
 }
 
 .logo img {
-    width: 56px;
-    /* hoặc 8% nếu bạn thích tỉ lệ theo chiều rộng */
-    margin-right: 4px;
-    /* khoảng cách giữa ảnh và chữ */
-}
-    h2{
-      margin-top: 0;
-      font-size: 32px;
-      text-align: center;
-      margin-bottom: 32px;;
-    }
-    
-
-    .sidebar {
-      width: 220px;
-      background: #fff;
-      border-right: 1px solid #eee;
-      display: flex;
-      padding: 20px 10px;
-    }
-
-    .sidebar .logo img {
-      width: 80px;
-    }
-.profile-container {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
+  width: 56px;
+  margin-right: 4px;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
-.profile-container a {
-  text-decoration: none;
-  color: #333;
-  display: flex;
-  align-items: center;
-  gap: 5px;
+h2 {
+  margin-top: 0;
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 32px;
 }
 
-.arrow {
-  font-size: 1em;
-}
-
-.profile-dropdown {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: 40px;
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  min-width: 150px;
-  box-shadow: 0px 2px 8px rgba(0,0,0,0.15);
-  z-index: 10;
-}
-
-.profile-dropdown a {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 15px;
-  text-decoration: none;
-  color: #333;
-}
-
-.profile-dropdown a:hover {
-  background-color: #f2f2f2;
-}
-
-.profile-container.open .arrow {
-  transform: rotate(180deg);
+label{
+  font-weight: 500;
 }
 
 .content {
-    width: 100%;
-    max-width: 600px; 
-    padding: 40px;
-    background: #fff;
-    border-radius: 16px;
+  width: 100%;
+  max-width: 600px;
+  padding: 40px;
+  background: #fff;
+  border-radius: 16px;
 }
 
-    .content h2 {
-      margin-top: 0;
-    }
+.setting-group {
+  margin-top: 20px;
+  max-width: 500px;
+}
 
-    .setting-group {
-      margin-top: 20px;
-      max-width: 500px;
-    }
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
 
-    .setting-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
+.setting-row label {
+  font-size: 16px;
+  min-width: 0;
+}
 
-    .setting-row label {
-      font-size: 16px;
-      flex: 1;
-      min-width: 0;
-    }
+.setting-row input[type="number"] {
+  width: 120px;
+  padding: 6px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  text-align: right;
+}
 
-    .setting-row input[type="number"] {
-      width: 120px;
-      padding: 6px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      text-align: right;
-    }
-
-    .toggle-switch {
-      position: relative;
-      width: 40px;
-      height: 20px;
-      min-width: 40px;
-    }
-
-    .toggle-switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      background-color: #ccc;
-      border-radius: 20px;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      width: 40px;      /* Phải giống .toggle-switch */
+.toggle-switch {
+  position: relative;
+  width: 40px;
   height: 20px;
-      transition: .4s;
-    }
+  min-width: 40px;
+}
 
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 14px;
-      width: 14px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      border-radius: 50%;
-      transition: .4s;
-    }
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
 
-    input:checked + .slider {
-      background-color: #ff5722;
-    }
+.slider {
+  position: absolute;
+  cursor: pointer;
+  background-color: #ccc;
+  border-radius: 20px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 40px;
+  height: 20px;
+  transition: .4s;
+}
 
-    input:checked + .slider:before {
-      transform: translateX(20px);
-    }
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: .4s;
+}
 
+input:checked+.slider {
+  background-color: #ff5722;
+}
 
-    .save-btn {
-      background: #ff5722;
-      cursor: pointer;
-    width: 100%;
-    padding: 14px;
-    font-size: 16px;
-    border: none;
-    border-radius: 9999px;
-    color: white;
-    margin-top: 20px;
-    }
+input:checked+.slider:before {
+  transform: translateX(20px);
+}

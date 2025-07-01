@@ -64,7 +64,7 @@ label {
 input {
     width: 100%;
     padding: 12px;
-    font-size: 15px;
+    font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 8px;
     box-sizing: border-box;
@@ -76,7 +76,7 @@ input {
     font-size: 16px;
     border: none;
     border-radius: 9999px;
-    background: #fde2dc;
+    background: #ff5722;
     color: #aaa;
     cursor: not-allowed;
     margin-top: 20px;
@@ -114,12 +114,6 @@ input {
     height: 20px;
 }
 
-@media (max-width: 480px) {
-    .social-buttons {
-        flex-direction: column;
-    }
-}
-
 .back-button {
     position: absolute;
     top: 20px;
@@ -133,9 +127,9 @@ input {
     font-weight: bold;
     padding: 6px 10px;
     border-radius: 8px;
-    transition: 0.2s;
+    transition: background 0.2s;
 }
 
 .back-button a:hover {
-    background: #f0f0f0;
+    background: #ea4e2a;
 }

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Verify Email</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="../assets/images/logo.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../css/pages/verify.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <script type="module">
+        import { checkVerifyAccess } from "../js/auth-check.js";
+        checkVerifyAccess();
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="../assets/images/logo.svg" alt="Logo" />
+        </div>
+        <h2>Email Verification</h2>
+        <p>Enter the verification code sent to your email</p>
+
+        <form id="verifyForm">
+            <input type="text" id="codeID" placeholder="Enter your code" required />
+            <button type="submit">Verify</button>
+        </form>
+
+        <p id="message"></p>
+    </div>
+
+    <script>
+        const form = document.getElementById('verifyForm');
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const codeID = document.getElementById('codeID').value;
+
+            try {
+                const res = await fetch('http://localhost:8080/api/auth/verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ codeID })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    alert("✅ Account activated successfully!");
+                    localStorage.removeItem('pendingVerification'); // Xóa cờ xác minh
+                    window.location.href = "login.html";
+                } else {
+                    document.getElementById('message').innerText = data.message || "❌ Verification failed!";
+                }
+            } catch (err) {
+                console.error(err);
+                document.getElementById('message').innerText = "⚠️ Server error.";
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -11,6 +11,17 @@
   <link rel="stylesheet" href="../css/components/header.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <script src = "../js/main.js"></script>
+
+  <script type="module">
+    import { redirectIfNotLoggedIn } from "../js/auth-check.js";
+    redirectIfNotLoggedIn();
+  </script>
+
+  <style> 
+    body{
+      display: none;
+    }
+  </style>
 </head>
 
 <body>

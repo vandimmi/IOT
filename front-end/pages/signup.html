@@ -23,7 +23,7 @@
     <h2>Sign up</h2>
     <p class="subtext">Already have an account? <a href="../pages/login.html">Log in</a></p>
 
-    <form>
+    <form id="signupForm">
       <div class="form-group">
         <label for="name">What should we call you?</label>
         <input type="text" id="name" placeholder="Enter your profile name" />
@@ -40,8 +40,49 @@
         <p class="password-note">Use 8 or more characters with a mix of letters, numbers & symbols</p>
       </div>
 
-      <button class="submit-btn" disabled>Sign up</button>
+      <button class="submit-btn">Sign up</button>
     </form>
   </div>
+  <script>
+    const form = document.getElementById('signupForm');
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        const res = await fetch('http://localhost:8080/api/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            password
+          })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          // ✅ Lưu email tạm thời để sử dụng ở trang xác minh
+          localStorage.setItem("verifyEmail", email);
+          alert("Check your email for the verification code.");
+          localStorage.setItem('pendingVerification', 'true');
+          // ✅ Điều hướng sang trang xác thực
+          window.location.href = "verify.html";
+        } else {
+          alert(data.message || "Sign up failed!");
+        }
+      } catch (err) {
+        alert("Error connecting to server.");
+        console.error(err);
+      }
+    });
+  </script>
 </body>
 </html>

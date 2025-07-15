@@ -10,7 +10,6 @@ services:
       - "27017:27017"
     volumes:
       - ./data/mongodb:/data/db
-  
 volumes:
   mongodb_data_container:
     driver: local

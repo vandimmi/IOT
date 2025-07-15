@@ -15,14 +15,17 @@ export class AuthService {
   ) { }
 
   async validateUser(email: string, pass: string): Promise<any> {
+  //  console.log("Validating user with email:", email);
     const user = await this.usersService.findByEmail(email);
     if (!user) {
-      throw new UnauthorizedException();
+      console.error("User not found");
+      throw new UnauthorizedException("2");
     }
 
     const isMatch = await comparePassword(pass, user.password);
     if (!isMatch) {
-      throw new UnauthorizedException();
+      console.error("Password mismatch");
+      throw new UnauthorizedException("3");
     }
 
     return user;
@@ -42,6 +45,7 @@ export class AuthService {
   async validateCode(codeID: string) {
     const user = await this.usersService.findByCodeID(codeID);
     if (!user) {
+      console.error("User not found or code expired");
       throw new UnauthorizedException('Invalid or expired code');
     }
     return user;

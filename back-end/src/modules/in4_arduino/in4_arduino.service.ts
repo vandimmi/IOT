@@ -1,26 +1,46 @@
+// src/modules/in4_arduino/in4_arduino.service.ts
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { in4_arduino, in4_arduinoDocument } from './schema/in4_arduino.schema';
 import { CreateIn4ArduinoDto } from './dto/create-in4_arduino.dto';
 import { UpdateIn4ArduinoDto } from './dto/update-in4_arduino.dto';
 
 @Injectable()
 export class In4ArduinoService {
-  create(createIn4ArduinoDto: CreateIn4ArduinoDto) {
-    return 'This action adds a new in4Arduino';
+  constructor(
+    @InjectModel(in4_arduino.name)
+    private readonly in4ArduinoModel: Model<in4_arduinoDocument>,
+  ) { }
+
+  async create(createIn4ArduinoDto: CreateIn4ArduinoDto) {
+    return await this.in4ArduinoModel.create(createIn4ArduinoDto);
   }
 
-  findAll() {
-    return `This action returns all in4Arduino`;
+  async findAll() {
+    return await this.in4ArduinoModel.find().sort({ createdAt: -1 }).exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} in4Arduino`;
+  async findOne(id: string) {
+    return await this.in4ArduinoModel.findById(id).exec();
   }
 
-  update(id: number, updateIn4ArduinoDto: UpdateIn4ArduinoDto) {
-    return `This action updates a #${id} in4Arduino`;
+  async update(id: string, updateIn4ArduinoDto: UpdateIn4ArduinoDto) {
+    return await this.in4ArduinoModel.findByIdAndUpdate(id, updateIn4ArduinoDto, {
+      new: true,
+    }).exec();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} in4Arduino`;
+  async save(dto: { mq2: number; mq7: number; mq135: number; temperature: number }) {
+    return await this.in4ArduinoModel.create(dto);
+  }
+
+  async findLatest(limit: number = 100000) {
+    return this.in4ArduinoModel.find().sort({ createdAt: -1 }).limit(limit);
+  }
+
+
+  async remove(id: string) {
+    return await this.in4ArduinoModel.findByIdAndDelete(id).exec();
   }
 }

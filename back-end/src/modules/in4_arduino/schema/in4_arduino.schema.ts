@@ -7,14 +7,22 @@ export type in4_arduinoDocument = HydratedDocument<in4_arduino>;
 @Schema({timestamps: true})
 export class in4_arduino {
     @Prop()
-        heat: number;
+        mq2: number;
 
     @Prop()
-        humidity: number;
+        mq7: number;
 
     @Prop()
-        gas: number;
+        mq135: number;
 
+    @Prop()
+        temperature: number;
+
+    @Prop()
+        waterVolunme: number;
+
+    @Prop()
+        fire: boolean;
 }
 
 export const in4_arduinoSchema = SchemaFactory.createForClass(in4_arduino);

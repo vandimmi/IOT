@@ -8,5 +8,6 @@ import { in4_arduino, in4_arduinoSchema } from './schema/in4_arduino.schema';
   imports: [MongooseModule.forFeature([{ name: in4_arduino.name, schema: in4_arduinoSchema }])],
   controllers: [In4ArduinoController],
   providers: [In4ArduinoService],
+  exports: [In4ArduinoService],
 })
 export class In4ArduinoModule {}

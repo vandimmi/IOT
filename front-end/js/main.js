@@ -22,7 +22,7 @@ fetch('../components/header.html')
             alert('Vui lòng đăng nhập để tiếp tục.');
             window.location.href = '../pages/login.html';
         } else {
-
+            document.body.style.display = 'flex'; // Hiển thị body nếu đã đăng nhập
         }
     });
 

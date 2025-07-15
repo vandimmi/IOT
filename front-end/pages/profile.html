@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,7 +10,7 @@
   <title>Profile</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <link rel="stylesheet" href="../css/common.css" />
-  <link rel="stylesheet" href="../css/components/header.css">
+  <link rel="stylesheet" href="../css/components/header.css" />
   <link rel="stylesheet" href="../css/pages/profile.css" />
   <script src="../js/main.js"></script>
 
@@ -17,39 +19,192 @@
     redirectIfNotLoggedIn();
   </script>
 
+  <style>
+    body {
+      display: none;
+    }
+
+    .profile-card {
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 30px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .profile-card img {
+      width: 80px;
+      border-radius: 50%;
+      margin-bottom: 15px;
+    }
+
+    .form-group {
+      margin: 15px 0;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .email-section {
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .email-item {
+      margin-top: 8px;
+      background: #f3f3f3;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+    }
+
+    .email-item i {
+      margin-right: 10px;
+      color: #555;
+    }
+
+    .save-btn {
+      margin-top: 25px;
+      padding: 12px 30px;
+      background: #ff5722;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .save-btn:hover {
+      background: #0056b3;
+    }
+  </style>
 </head>
 
 <body>
   <div id="header-placeholder"></div>
   <div id="main">
     <div class="profile-card">
-      <img src="../assets/images/ava.jpg" alt="Alexa Rawles">
-      <h3>Alexa Rawles</h3>
-      <p>alexarawles@gmail.com</p>
+      <img src="../assets/images/ava.jpg" alt="User Avatar" />
+      <h3 id="displayName">Loading...</h3>
+      <p id="displayEmail">Loading...</p>
 
-      <div class="form-group">
-        <label>Profile Name</label>
-        <input type="text" placeholder="Your Profile Name">
-      </div>
-
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" placeholder="Password">
-      </div>
-
-      <div class="email-section">
-        <h4>My Email Address</h4>
-        <div class="email-item">
-          <i class="fa-solid fa-envelope"></i>
-          alexarawles@gmail.com
+      <form id="profileForm">
+        <div class="form-group">
+          <label for="name">Profile Name</label>
+          <input type="text" id="name" placeholder="Your Name" />
         </div>
-      </div>
 
-      <button class="save-btn">Save</button>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="New Password" />
+        </div>
+
+        <div class="form-group">
+          <label for="wifiName">Wi-Fi Name</label>
+          <input type="text" id="wifiName" placeholder="Wi-Fi SSID" />
+        </div>
+
+        <div class="form-group">
+          <label for="wifiPassword">Wi-Fi Password</label>
+          <input type="password" id="wifiPassword" placeholder="Wi-Fi Password" />
+        </div>
+
+        <div class="email-section">
+          <h4>Email (readonly)</h4>
+          <div class="email-item">
+            <i class="fa-solid fa-envelope"></i>
+            <span id="readonly-email">example@gmail.com</span>
+          </div>
+        </div>
+
+        <button type="submit" class="save-btn">Save</button>
+      </form>
     </div>
+  </div>
 
-  </div>
-  </div>
+  <script>
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Unauthorized. Please login.");
+      window.location.href = "login.html";
+    }
+
+    async function loadUserInfo() {
+      try {
+        const res = await fetch("http://localhost:8080/api/users/me", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        const data = await res.json();
+
+        // 🟢 Gán dữ liệu vào UI
+        document.getElementById("displayName").innerText = data.name || "No name";
+        document.getElementById("displayEmail").innerText = data.email;
+        document.getElementById("readonly-email").innerText = data.email;
+
+        document.getElementById("name").value = data.name || "";
+        // WiFi/Telegram: nếu có
+        document.getElementById("wifiName").value = data.wifiName || "";
+        document.getElementById("wifiPassword").value = data.wifiPassword || "";
+
+      } catch (err) {
+        console.error(err);
+        alert("❌ Failed to load user data.");
+      }
+    }
+
+    loadUserInfo();
+
+    document.getElementById("profileForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const data = {
+        name: document.getElementById("name").value,
+        password: document.getElementById("password").value,
+        wifiName: document.getElementById("wifiName").value,
+        wifiPassword: document.getElementById("wifiPassword").value
+      };
+
+      try {
+        const res = await fetch("http://localhost:8080/api/users/update", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+        if (res.ok) {
+          alert("✅ Profile updated successfully!");
+        } else {
+          alert("❌ Update failed: " + (result.message || "Unknown error"));
+        }
+      } catch (err) {
+        console.error(err);
+        alert("❌ Error connecting to server.");
+      }
+    });
+  </script>
 </body>
 
 </html>

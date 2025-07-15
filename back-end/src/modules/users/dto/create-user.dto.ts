@@ -13,6 +13,8 @@ export class CreateUserDto {
 
     @IsNotEmpty({ message: 'Password is required' })
     password: string;
+    @IsNotEmpty({ message: 'Chat ID is required' })
+    chat_id: string;
 
     @IsOptional()
     age: number;

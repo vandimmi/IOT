@@ -4,13 +4,14 @@ import { LocalAuthGuard } from './passport/local-auth.guard';
 import { Public } from 'src/customize/customize';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { MailerService } from '@nestjs-modules/mailer';
+import { TelegramService } from 'src/telegram/telegram.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly mailerService: MailerService,
-
+    private readonly telegramService: TelegramService,
   ) { }
 
   @Post("login")
@@ -62,8 +63,11 @@ export class AuthController {
 
     user.isActive = true;
     await user.save();
-    // Here you can add logic to activate the user account
-    return { message: 'User verified successfully', user };
-  }
+
+    return {
+      message: 'User verified successfully!',
+      telegramBotLink: 'https://t.me/FireGuardd_bot',
+    };
+}
 
 }

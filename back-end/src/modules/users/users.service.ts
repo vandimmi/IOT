@@ -13,6 +13,7 @@ import { CreateAuthDto } from 'src/auth/dto/create-auth.dto';
 import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
 import { MailerService } from '@nestjs-modules/mailer';
+import { TelegramService } from 'src/telegram/telegram.service';
 
 @Injectable()
 export class UsersService {
@@ -20,6 +21,7 @@ export class UsersService {
     @InjectModel(User.name)
     private userModel: Model<User>,
     private readonly mailerService: MailerService,
+    private readonly telegramService: TelegramService,
   ) { }
 
   isEmailExist = async (email: string) => {
@@ -28,7 +30,7 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto) {
-    const { name, email, username, password } = createUserDto;
+    const { name, email, username, password, chat_id} = createUserDto;
     const isExist = await this.isEmailExist(email);
     if (isExist) {
       throw new BadRequestException('Email already exists');
@@ -39,6 +41,7 @@ export class UsersService {
       email,
       username,
       password: hashedPassword,
+      chat_id,
     });
     return {
       _id: newUser._id,
@@ -95,7 +98,7 @@ export class UsersService {
   }
 
   async handleRegister(registerDto: CreateAuthDto) {
-    const { name, password, email } = registerDto;
+    const { name, password, email} = registerDto;
     const isExist = await this.isEmailExist(email);
     if (isExist) {
       throw new BadRequestException('Email already exists');
@@ -123,4 +126,11 @@ export class UsersService {
       _id: User._id,
     }
   }
+  async saveChatId(username: string, chat_id: string) {
+    await this.userModel.updateOne(
+      { username },
+      { $set: { chat_id } },
+      { upsert: true } // tạo mới nếu chưa có
+  );
+}
 }

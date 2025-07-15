@@ -49,8 +49,12 @@
                 const data = await res.json();
 
                 if (res.ok) {
-                    alert("✅ Account activated successfully!");
-                    localStorage.removeItem('pendingVerification'); // Xóa cờ xác minh
+                    localStorage.removeItem('pendingVerification');
+
+                    if (confirm("Account activated successfully!\nDo you want to connect to our Telegram bot now?")) {
+                        window.open("https://t.me/FireGuardd_bot", "_blank");
+                    }
+
                     window.location.href = "login.html";
                 } else {
                     document.getElementById('message').innerText = data.message || "❌ Verification failed!";

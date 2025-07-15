@@ -9,16 +9,18 @@ import { Passport } from 'passport';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './passport/local.strategy';
 import { JwtStrategy } from './passport/jwt.strategy';
+import { TelegramModule } from 'src/telegram/telegram.module';
 
 @Module({
   imports: [
     UsersModule,
+    TelegramModule, // 👈 import module thay vì service
     JwtModule.registerAsync({
       useFactory: async (configService: ConfigService) => ({
         global: true,
-        secret: configService.get<string>('JWT_SECRET'), 
+        secret: configService.get<string>('JWT_SECRET'),
         signOptions: {
-          expiresIn: configService.get<string>('JWT_EXPIRATION'), // Token expiration time
+          expiresIn: configService.get<string>('JWT_EXPIRATION'),
         },
       }),
       inject: [ConfigService],

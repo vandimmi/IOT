@@ -33,6 +33,9 @@ export class User {
   @Prop()
   codeExpire: Date;
 
+  @Prop()
+  chat_id: string;
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

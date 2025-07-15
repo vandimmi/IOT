@@ -10,15 +10,15 @@
   <link rel="stylesheet" href="../css/pages/dashboard.css" />
   <link rel="stylesheet" href="../css/components/header.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <script src = "../js/main.js"></script>
+  <script src="../js/main.js"></script>
 
   <script type="module">
     import { redirectIfNotLoggedIn } from "../js/auth-check.js";
     redirectIfNotLoggedIn();
   </script>
 
-  <style> 
-    body{
+  <style>
+    body {
       display: none;
     }
   </style>
@@ -32,28 +32,28 @@
     <div class="cards">
       <div class="card">
         <i class="fa-solid fa-smog"></i>
-        <div class="value">350</div>          <!-- Value for smoke in ppm -->
-        <div class="label">Khói</div>
+        <div class="value" id="value-mq2" --></div> <!-- Value for smoke in ppm -->
+        <div class="label">Khí Gas</div>
       </div>
       <div class="card">
         <i class="fa-solid fa-temperature-half"></i>
-        <div class="value">23.5</div>       <!-- Value for temperature in °C -->
-        <div class="label">Nhiệt độ</div>
+        <div class="value" id="value-mq7">--</div> <!-- Value for temperature in °C -->
+        <div class="label">Khí CO</div>
       </div>
       <div class="card">
         <i class="fa-solid fa-lightbulb"></i>
-        <div class="value">ON</div>       <!-- Value for LED status -->
-        <div class="label">LED</div>
+        <div class="value" id="value-mq135">--</div> <!-- Value for LED status -->
+        <div class="label">Khí dễ cháy</div>
       </div>
       <div class="card">
         <i class="fa-solid fa-bell-slash"></i>
-        <div class="value">OFF</div>    <!-- Value for alarm status -->
-        <div class="label">Báo động</div>
+        <div class="value" id="value-temp">--</div> <!-- Value for alarm status -->
+        <div class="label">Nhiệt độ</div>
       </div>
       <div class="card">
-        <i class="fa-solid fa-water"></i>
-        <div class="value">OFF</div>  <!-- Value for water valve status -->
-        <div class="label">Vòi nước</div>
+        <i class="fa-solid fa-status"></i>
+        <div class="value" id="value-status">--</div>
+        <div class="label">Thiết bị</div>
       </div>
     </div>
 
@@ -82,7 +82,7 @@
     </table>
   </div>
 
-  <script src = "../js/pages/dashboard.js"></script>
+  <script src="../js/pages/dashboard.js"></script>
 </body>
 
 </html>

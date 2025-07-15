@@ -144,14 +144,28 @@ function updateTable(data) {
         date.textContent = d.toLocaleString();
 
         const message = document.createElement('td');
+        const alerts = [];
+
         if (entry.flame === 0) {
-            message.textContent = 'Phát hiện có lửa 🔥';
-        } else if (entry.temperature > 60) {
-            message.textContent = 'Nhiệt độ cao';
-        } else if (entry.mq2 > 600) {
-            message.textContent = 'Khói dày đặc';
+            alerts.push("Phát hiện có lửa 🔥");
+        }
+        if (entry.temperature > 60) {
+            alerts.push("Nhiệt độ cao");
+        }
+        if (entry.mq2 > 700) {
+            alerts.push("Rò rỉ khí gas");
+        }
+        if (entry.mq7 > 1200) {
+            alerts.push("Nồng độ CO cao");
+        }
+        if (entry.mq135 > 900) {
+            alerts.push("Ô nhiễm không khí");
+        }
+
+        if (alerts.length === 0) {
+            message.textContent = "Dữ liệu ổn định";
         } else {
-            message.textContent = 'Dữ liệu ổn định';
+            message.textContent = alerts.join(", ");
         }
 
         tr.append(no, id, date, message);

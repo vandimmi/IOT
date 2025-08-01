@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
+import { ChatbotModule } from './modules/chatbot/chatbot.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { In4ArduinoModule } from './modules/in4_arduino/in4_arduino.module';
@@ -12,6 +13,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 
 @Module({
   imports: [
+    ChatbotModule,
     UsersModule,
     In4ArduinoModule,
     AuthModule,

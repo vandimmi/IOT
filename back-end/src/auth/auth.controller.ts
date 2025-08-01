@@ -63,7 +63,10 @@ export class AuthController {
     user.isActive = true;
     await user.save();
     // Here you can add logic to activate the user account
-    return { message: 'User verified successfully', user };
+    return {
+      message: 'User verified successfully!',
+      telegramBotLink: `https://t.me/FireGuardd_bot`,
+    };
   }
 
 }

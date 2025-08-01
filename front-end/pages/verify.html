@@ -49,12 +49,13 @@
                 const data = await res.json();
 
                 if (res.ok) {
+                    const email = localStorage.getItem('pendingVerification');
                     localStorage.removeItem('pendingVerification');
 
-                    if (confirm("Account activated successfully!\nDo you want to connect to our Telegram bot now?")) {
-                        window.open("https://t.me/FireGuardd_bot", "_blank");
+                    const telegramLink = `https://t.me/FireGuardd_bot?start=${email}`;
+                    if (confirm("Tài khoản đã kích hoạt!\nBạn có muốn kết nối bot Telegram không?")) {
+                        window.location.href = telegramLink;
                     }
-
                     window.location.href = "login.html";
                 } else {
                     document.getElementById('message').innerText = data.message || "❌ Verification failed!";

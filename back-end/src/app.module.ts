@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/passport/jwt-auth.gaurd';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { TelegramModule } from './telegram/telegram.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
       inject: [ConfigService],
 
     }),
+    TelegramModule, // Import TelegramModule here
   ],
   controllers: [AppController],
   providers: [

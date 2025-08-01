@@ -1,29 +1,13 @@
-// telegram.controller.ts
 import { Controller, Post, Body } from '@nestjs/common';
-import { TelegramService } from './telegram.service';
+import { UsersService } from '../modules/users/users.service';
 
 @Controller('telegram')
 export class TelegramController {
-  constructor(private readonly telegramService: TelegramService) {}
+  constructor(private readonly usersService: UsersService) {}
 
-  @Post('webhook')
-  async handleWebhook(@Body() update: any) {
-    console.log('Webhook update:', JSON.stringify(update, null, 2));
-
-    if (update.message) {
-      const chatId = update.message.chat.id.toString();
-      const username = update.message.from.username;
-
-      // Lưu chat_id vào DB
-      await this.telegramService.saveChatId({username, chatId});
-
-      // Gửi trả lời lại user
-      await this.telegramService.sendMessage(
-        chatId,
-        `✅ Bot đã lưu chat_id của bạn: ${chatId}`
-      );
-    }
-
-    return { ok: true };
+  @Post('connect')
+  async connectTelegram(@Body() body: { email: string; chatId: number }) {
+    const { email, chatId } = body;
+    return this.usersService.saveChatId(email, chatId);
   }
 }

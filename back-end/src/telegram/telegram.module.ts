@@ -1,14 +1,12 @@
-// telegram.module.ts
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { TelegramController } from './telegram.controller';
+import { Module, forwardRef } from '@nestjs/common';
 import { TelegramService } from './telegram.service';
-import { User, UserSchema } from 'src/modules/users/schemas/user.schema';
+import { UsersModule } from '../modules/users/users.module';
+import { TelegramController } from './telegram.controller';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])],
-  controllers: [TelegramController],
+  imports: [forwardRef(() => UsersModule)],
   providers: [TelegramService],
   exports: [TelegramService],
+  controllers: [TelegramController],
 })
 export class TelegramModule {}

@@ -24,6 +24,7 @@ export class AuthController {
   @Post("register")
   @Public()
   register(@Body() registerDto: CreateAuthDto) {
+    console.log("📥 Register DTO:", registerDto);
     return this.authService.handleRegister(registerDto);
   }
 

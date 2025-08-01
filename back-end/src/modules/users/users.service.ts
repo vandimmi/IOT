@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common/exceptions';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -98,6 +99,7 @@ export class UsersService {
   }
 
   async handleRegister(registerDto: CreateAuthDto) {
+    console.log("🔥 handleRegister dto:", registerDto);
     const { name, password, email} = registerDto;
     const isExist = await this.isEmailExist(email);
     if (isExist) {
@@ -126,11 +128,13 @@ export class UsersService {
       _id: User._id,
     }
   }
-  async saveChatId(username: string, chat_id: string) {
-    await this.userModel.updateOne(
-      { username },
-      { $set: { chat_id } },
-      { upsert: true } // tạo mới nếu chưa có
-  );
-}
+  async saveChatId(email: string, chatId: number) {
+    const user = await this.userModel.findOne({ email });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    user.chat_id = chatId;
+    await user.save();
+    return { success: true };
+  }
 }

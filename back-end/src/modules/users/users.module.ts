@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -8,7 +8,7 @@ import { TelegramModule } from '../../telegram/telegram.module'; // Import Teleg
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    TelegramModule, // 👈 thêm dòng này
+    forwardRef(() => TelegramModule), 
   ],
   controllers: [UsersController],
   providers: [UsersService],

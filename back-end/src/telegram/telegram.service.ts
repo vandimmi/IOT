@@ -1,41 +1,39 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import axios from 'axios';
-import { User, UserDocument } from '../modules/users/schemas/user.schema';
+import { Inject, Injectable, OnModuleInit, forwardRef } from '@nestjs/common';
+import { Bot } from 'grammy';
+import { ConfigService } from '@nestjs/config';
+import { UsersService } from 'src/modules/users/users.service';
 
 @Injectable()
-export class TelegramService {
-  private token = process.env.TELEGRAM_TOKEN;
-  private api = `https://api.telegram.org/bot${this.token}`;
+export class TelegramService implements OnModuleInit {
+  private bot: Bot;
 
   constructor(
-    @InjectModel(User.name)
-    private userModel: Model<UserDocument>,
-  ) {}
-
-  async sendMessage(chatId: string, text: string) {
-    try {
-      await axios.post(`${this.api}/sendMessage`, {
-        chat_id: chatId,
-        text,
-      });
-    } catch (error) {
-      console.error('❌ Telegram sendMessage error:', error.response?.data || error.message);
-    }
+    @Inject(forwardRef(() => UsersService))
+    private usersService: UsersService,
+    private configService: ConfigService,
+  ) {
+    const token = this.configService.get<string>('TELEGRAM_BOT_TOKEN');
+    if (!token) throw new Error('Missing TELEGRAM_BOT_TOKEN');
+    this.bot = new Bot(token);
   }
 
-  async saveChatId({ username, chatId }: { username: string; chatId: string }) {
-    const user = await this.userModel.findOneAndUpdate(
-      { username },
-      { $set: { chat_id: chatId } },
-      { new: true }
-    );
+  async onModuleInit() {
+    this.bot.command('start', async (ctx) => {
+      const chatId = ctx.chat.id;
+      const username = ctx.from?.username || '';
+      const email = ctx.message?.text?.split(' ')[1]; // start <email>
+      if (!email) {
+        return ctx.reply('Bạn cần cung cấp email để liên kết tài khoản.');
+      }
 
-    if (!user) {
-      console.warn(`⚠️ User ${username} not found to save chat_id`);
-    } else {
-      console.log(`✅ chat_id saved for user ${username}: ${chatId}`);
-    }
+      await this.usersService.saveChatId(email, chatId);
+      await ctx.reply(`Xin chào ${username}, bạn đã liên kết bot thành công!`);
+    });
+
+    await this.bot.start();
+  }
+
+  sendMessage(chatId: number | string, text: string) {
+    return this.bot.api.sendMessage(chatId, text);
   }
 }

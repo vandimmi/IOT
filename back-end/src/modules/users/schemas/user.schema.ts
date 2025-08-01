@@ -1,4 +1,3 @@
-
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
@@ -34,7 +33,7 @@ export class User {
   codeExpire: Date;
 
   @Prop()
-  chat_id: string;
+  chat_id: number;
 
 }
 

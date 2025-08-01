@@ -31,13 +31,14 @@ export class In4ArduinoService {
     }).exec();
   }
 
-  async save(dto: { mq2: number; mq7: number; mq135: number; temperature: number }) {
+  async save(dto: { mq2: number; mq7: number; mq135: number; temperature: number; flame: boolean }) {
     return await this.in4ArduinoModel.create(dto);
   }
 
   async findLatest(limit: number = 100000) {
     return this.in4ArduinoModel.find().sort({ createdAt: -1 }).limit(limit);
   }
+
 
 
   async remove(id: string) {

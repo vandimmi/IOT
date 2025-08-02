@@ -24,7 +24,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api', { exclude: [''] });
 
   app.enableCors({
-    origin: configService.get('http://localhost:5500') || '*',
+    origin: configService.get('https://iot-5.onrender.com') || '*',
   });
 
   app.useGlobalPipes(new ValidationPipe({

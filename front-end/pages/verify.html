@@ -49,7 +49,7 @@
                 const data = await res.json();
 
                 if (res.ok) {
-                    alert("✅ Account activated successfully!");
+                    alert("✅ Account activated successfully!\n" + "This is Telegram chatbot link: " + data.telegramBotLink);
                     localStorage.removeItem('pendingVerification'); // Xóa cờ xác minh
                     window.location.href = "login.html";
                 } else {

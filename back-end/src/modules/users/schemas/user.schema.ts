@@ -18,6 +18,9 @@ export class User {
   @Prop()
   password: string;
 
+  @Prop()
+  chat_id: number;
+
   @Prop({default: 'user'})
   role: string;
 

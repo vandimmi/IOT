@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/passport/jwt-auth.gaurd';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { TelegramModule } from './telegram/telegram.module';
 import { MqttModule } from './mqtt/mqtt.module';
 import { MqttService } from './mqtt/mqtt.service';
 
@@ -19,6 +20,7 @@ import { MqttService } from './mqtt/mqtt.service';
     UsersModule,
     In4ArduinoModule,
     AuthModule,
+    TelegramModule,
     MqttModule,
     ConfigModule.forRoot({
       isGlobal: true,

@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { bot } from './telegram/telegram.bot';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -35,5 +35,7 @@ async function bootstrap() {
     console.log('✅ MQTT microservice is running');
   });
   await app.listen(process.env.PORT ?? 8080);
+  await bot.start();
+  console.log("✅ Telegram bot started");
 }
 bootstrap();

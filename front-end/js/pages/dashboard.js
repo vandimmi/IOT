@@ -1,10 +1,10 @@
 console.log("✅ Dashboard loaded at " + new Date().toLocaleString());
-const apiUrl = 'http://localhost:8080/api/in4-arduino/latest?limit=100000';
+const apiUrl = 'https://iot-be-5421.onrender.com/api/in4-arduino/latest?limit=100000';
 const token = localStorage.getItem('token');
 
 async function fetchAndUpdate() {
     const token = localStorage.getItem('token');
-    const apiUrl = 'http://localhost:8080/api/in4-arduino/latest?limit=100';
+    const apiUrl = 'https://iot-be-5421.onrender.com/api/in4-arduino/latest?limit=100';
 
     try {
         const res = await fetch(apiUrl, {

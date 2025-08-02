@@ -148,7 +148,7 @@
 
     async function loadUserInfo() {
       try {
-        const res = await fetch("http://localhost:8080/api/users/me", {
+        const res = await fetch("https://iot-be-5421.onrender.com/api/users/me", {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -184,7 +184,7 @@
       };
 
       try {
-        const res = await fetch("http://localhost:8080/api/users/update", {
+        const res = await fetch("https://iot-be-5421.onrender.com/api/users/update", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",

@@ -1,136 +1,21 @@
-// #include <WiFi.h>
-// #include <HTTPClient.h>
-// #include <ArduinoJson.h>
-// #include <OneWire.h>
-// #include <DallasTemperature.h>
-
-// // ==== WiFi & Backend Setup ====
-// const char* ssid = "CLCK23";
-// const char* password = "02092023";
-// const char* backendIP = "192.168.1.132";
-
-// String jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODY5ODMzYzYxN2EwMzZhNzQ5NTU3MDIiLCJlbWFpbCI6Im5wdGhvMjNAY2xjLmZpdHVzLmVkdS52biIsImlhdCI6MTc1MjUyMzY4NSwiZXhwIjoxNzUyNjEwMDg1fQ.5Ldk2WgoNUKCQSkjQqlyUi3HCfo9A-ydMmVJkoYMqjA";
-
-// // ==== Cảm biến chân kết nối ====
-// #define MQ2_PIN     32
-// #define MQ7_PIN     33
-// #define MQ135_PIN   35
-// #define FLAME_PIN   34
-// #define ONE_WIRE_BUS 4   // DS18B20 DQ chân
-
-// // ==== Khởi tạo cảm biến nhiệt độ ====
-// OneWire oneWire(ONE_WIRE_BUS);
-// DallasTemperature sensors(&oneWire);
-
-// // ==== Đăng nhập ====
-// bool loginAndGetToken() {
-//   if (WiFi.status() != WL_CONNECTED) return false;
-
-//   HTTPClient http;
-//   http.begin("http://" + String(backendIP) + ":8080/api/auth/login");
-//   http.addHeader("Content-Type", "application/json");
-
-//   String loginPayload = "{\"username\":\"nptho23@clc.fitus.edu.vn\",\"password\":\"123\"}";
-//   int responseCode = http.POST(loginPayload);
-
-//   if (responseCode == 200 || responseCode == 201) {
-//     String res = http.getString();
-//     Serial.println("Login response: " + res);
-
-//     DynamicJsonDocument doc(512);
-//     deserializeJson(doc, res);
-//     jwtToken = doc["access_token"].as<String>();
-//     Serial.println("✅ Token saved: " + jwtToken);
-
-//     http.end();
-//     return true;
-//   } else {
-//     Serial.println("❌ Login failed. Code: " + String(responseCode));
-//     http.end();
-//     return false;
-//   }
-// }
-
-// // ==== Gửi dữ liệu ====
-// void sendSensorData() {
-//   if (WiFi.status() != WL_CONNECTED || jwtToken == "") return;
-
-//   // Đọc cảm biến nhiệt độ
-//   sensors.requestTemperatures();
-//   float temperature = sensors.getTempCByIndex(0);
-
-//   // Đọc MQ
-//   int mq2 = analogRead(MQ2_PIN);
-//   int mq7 = analogRead(MQ7_PIN);
-//   int mq135 = analogRead(MQ135_PIN);
-
-//   // Đọc cảm biến lửa
-//   int flame = digitalRead(FLAME_PIN);
-
-//   Serial.println("---- Dữ liệu cảm biến ----");
-//   Serial.printf("Nhiệt độ (DS18B20): %.2f °C\n", temperature);
-//   Serial.printf("MQ-2: %d\n", mq2);
-//   Serial.printf("MQ-7: %d\n", mq7);
-//   Serial.printf("MQ-135: %d\n", mq135);
-//   Serial.printf("Cảm biến lửa: %s\n", flame == LOW ? "🔥 Có lửa" : "Không có lửa");
-
-//   HTTPClient http;
-//   http.begin("http://" + String(backendIP) + ":8080/api/in4-arduino/upload");
-//   http.addHeader("Content-Type", "application/json");
-//   http.addHeader("Authorization", "Bearer " + jwtToken);
-
-//   DynamicJsonDocument payload(512);
-//   payload["mq2"] = mq2;
-//   payload["mq7"] = mq7;
-//   payload["mq135"] = mq135;
-//   payload["temperature"] = temperature;
-//   payload["flame"] = flame;
-
-//   String body;
-//   serializeJson(payload, body);
-//   int code = http.POST(body);
-//   Serial.println("📤 Gửi dữ liệu - Mã phản hồi: " + String(code));
-//   http.end();
-// }
-
-// void setup() {
-//   Serial.begin(115200);
-//   sensors.begin();
-//   pinMode(FLAME_PIN, INPUT);
-
-//   WiFi.begin(ssid, password);
-//   while (WiFi.status() != WL_CONNECTED) {
-//     Serial.print(".");
-//     delay(500);
-//   }
-//   Serial.println("\n✅ WiFi connected");
-
-//   if (loginAndGetToken()) {
-//     Serial.println("✅ Logged in and token stored");
-//   } else {
-//     Serial.println("❌ Login failed");
-//   }
-// }
-
-// void loop() {
-//   sendSensorData();
-//   delay(10000); // Gửi mỗi 10 giây
-// }
-
 #include <WiFi.h>
-#include <HTTPClient.h>
+#include <WiFiClientSecure.h>
+#include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
-// ==== WiFi & Backend Setup ====
+// ===== WiFi & MQTT Info =====
 const char* ssid = "CLCK23";
 const char* password = "02092023";
-const char* backendIP = "192.168.1.132"; // Đổi thành IP backend thực tế
 
-String jwtToken = "";
+const char* mqtt_server = "195d12f952ea4bbba0db56a9e044028f.s1.eu.hivemq.cloud";
+const int mqtt_port = 8883;  // TLS port
+const char* mqtt_user = "NPT100";
+const char* mqtt_pass = "Phuctho100";
+const char* mqtt_topic = "esp32/data";
 
-// ==== Sensor Pins ====
+// ===== Sensors Setup =====
 #define MQ2_PIN     32
 #define MQ7_PIN     33
 #define MQ135_PIN   35
@@ -140,54 +25,55 @@ String jwtToken = "";
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
-// ==== Hàm login để lấy token ====
-bool loginAndGetToken() {
-  if (WiFi.status() != WL_CONNECTED) return false;
+// ===== MQTT & WiFiClientSecure =====
+WiFiClientSecure wifiClient;
+PubSubClient client(wifiClient);
 
-  HTTPClient http;
-  http.begin("http://" + String(backendIP) + ":8080/api/auth/login");
-  http.addHeader("Content-Type", "application/json");
+// ===== Certificate check (optional) =====
+// Bạn có thể dùng `wifiClient.setInsecure();` để bỏ qua kiểm tra chứng chỉ (không khuyến khích cho sản phẩm thật)
+void setup_wifi() {
+  Serial.print("🔌 Đang kết nối WiFi");
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\n✅ Đã kết nối WiFi");
 
-  // ✅ Đảm bảo dùng đúng thông tin tài khoản (username hoặc email đều được nếu backend hỗ trợ)
-  String loginPayload = "{\"username\":\"nptho23@clc.fitus.edu.vn\",\"password\":\"123\"}";
+  wifiClient.setInsecure(); // ⚠️ Không kiểm tra chứng chỉ (nếu cần bảo mật cao, bạn cần tải chứng chỉ và dùng `wifiClient.setCACert(...)`)
+}
 
-  int responseCode = http.POST(loginPayload);
-  if (responseCode == 200 || responseCode == 201) {
-    String res = http.getString();
-    Serial.println("✅ Login response: " + res);
-
-    DynamicJsonDocument doc(512);
-    DeserializationError err = deserializeJson(doc, res);
-    if (err) {
-      Serial.println("❌ JSON parse error: " + String(err.c_str()));
-      http.end();
-      return false;
+void reconnect() {
+  while (!client.connected()) {
+    Serial.print("🔄 Kết nối MQTT TLS...");
+    String clientId = "ESP32Client-" + String(random(0xffff), HEX);
+    if (client.connect(clientId.c_str(), mqtt_user, mqtt_pass)) {
+      Serial.println("✅ MQTT đã kết nối");
+    } else {
+      Serial.print("❌ Lỗi MQTT: ");
+      Serial.print(client.state());
+      Serial.println(" → thử lại sau 5s");
+      delay(5000);
     }
-
-    jwtToken = doc["access_token"].as<String>();
-    Serial.println("✅ Token saved");
-    http.end();
-    return true;
-  } else {
-    Serial.println("❌ Login failed. Code: " + String(responseCode));
-    http.end();
-    return false;
   }
 }
 
-// ==== Gửi dữ liệu cảm biến ====
-void sendSensorData() {
-  if (WiFi.status() != WL_CONNECTED) return;
+void setup() {
+  Serial.begin(115200);
+  sensors.begin();
+  pinMode(FLAME_PIN, INPUT);
 
-  if (jwtToken == "") {
-    Serial.println("🔄 Token rỗng, đang đăng nhập...");
-    if (!loginAndGetToken()) {
-      Serial.println("❌ Không thể lấy token");
-      return;
-    }
+  setup_wifi();
+  client.setServer(mqtt_server, mqtt_port);
+}
+
+void loop() {
+  if (!client.connected()) {
+    reconnect();
   }
+  client.loop();
 
-  // Đọc dữ liệu cảm biến
+  // Đọc cảm biến
   sensors.requestTemperatures();
   float temperature = sensors.getTempCByIndex(0);
   int mq2 = analogRead(MQ2_PIN);
@@ -195,57 +81,23 @@ void sendSensorData() {
   int mq135 = analogRead(MQ135_PIN);
   int flame = digitalRead(FLAME_PIN);
 
-  Serial.println("---- 🔍 Dữ liệu cảm biến ----");
-  Serial.printf("🌡 Nhiệt độ: %.2f °C | MQ2: %d | MQ7: %d | MQ135: %d | Lửa: %s\n",
-                temperature, mq2, mq7, mq135, flame == LOW ? "🔥 Có lửa" : "An toàn");
+  // In ra Serial
+  Serial.printf("🌡 Temp: %.2f | MQ2: %d | MQ7: %d | MQ135: %d | Flame: %s\n",
+                temperature, mq2, mq7, mq135, flame == LOW ? "🔥" : "OK");
 
-  // Gửi lên server
-  HTTPClient http;
-  http.begin("http://" + String(backendIP) + ":8080/api/in4-arduino/upload");
-  http.addHeader("Content-Type", "application/json");
-  http.addHeader("Authorization", "Bearer " + jwtToken);
+  // Tạo JSON payload
+  StaticJsonDocument<256> doc;
+  doc["temperature"] = temperature;
+  doc["mq2"] = mq2;
+  doc["mq7"] = mq7;
+  doc["mq135"] = mq135;
+  doc["flame"] = flame;
 
-  DynamicJsonDocument payload(512);
-  payload["mq2"] = mq2;
-  payload["mq7"] = mq7;
-  payload["mq135"] = mq135;
-  payload["temperature"] = temperature;
-  payload["flame"] = flame;
+  char payload[256];
+  serializeJson(doc, payload);
 
-  String body;
-  serializeJson(payload, body);
-  int code = http.POST(body);
+  // Gửi lên topic MQTT
+  client.publish(mqtt_topic, payload);
 
-  if (code == 401) {
-    Serial.println("🔒 Token hết hạn hoặc sai. Đang đăng nhập lại...");
-    jwtToken = "";
-    loginAndGetToken(); // thử đăng nhập lại
-  } else {
-    Serial.println("📤 Mã phản hồi gửi dữ liệu: " + String(code));
-  }
-
-  http.end();
-}
-
-// ==== Setup ====
-void setup() {
-  Serial.begin(115200);
-  sensors.begin();
-  pinMode(FLAME_PIN, INPUT);
-
-  Serial.print("🔌 Đang kết nối WiFi");
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    Serial.print(".");
-    delay(500);
-  }
-  Serial.println("\n✅ Đã kết nối WiFi");
-
-  loginAndGetToken();
-}
-
-// ==== Loop ====
-void loop() {
-  sendSensorData();
   delay(10000); // mỗi 10 giây
 }

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
+import { ChatbotModule } from './modules/chatbot/chatbot.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { In4ArduinoModule } from './modules/in4_arduino/in4_arduino.module';
@@ -10,14 +11,17 @@ import { JwtAuthGuard } from './auth/passport/jwt-auth.gaurd';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { TelegramModule } from './telegram/telegram.module';
+import { MqttModule } from './mqtt/mqtt.module';
+import { MqttService } from './mqtt/mqtt.service';
 
 @Module({
   imports: [
+    ChatbotModule,
     UsersModule,
     In4ArduinoModule,
     AuthModule,
-    // Import the Telegram module
     TelegramModule,
+    MqttModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env']
@@ -60,13 +64,14 @@ import { TelegramModule } from './telegram/telegram.module';
 
     }),
   ],
-  controllers: [AppController],
+  controllers: [AppController, MqttService],
   providers: [
     AppService,
     {
       provide: 'APP_GUARD',
       useClass: JwtAuthGuard,
-    }
+    },
+    MqttService,
   ],
 })
 export class AppModule { }

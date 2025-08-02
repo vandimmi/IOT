@@ -112,15 +112,20 @@ export class UsersService {
       codeID: C_ID,
       codeExpire: dayjs().add(5, 'minutes').toDate(),
     })
-    this.mailerService.sendMail({
-      to: User.email, // list of receivers
-      subject: 'Activate account ', // Subject line
-      template: 'register',
-      context: {
-        name: User?.name ?? User.email,
-        activationCode: C_ID
-      }
-    })
+    try {
+      await this.mailerService.sendMail({
+        to: User.email, // list of receivers
+        subject: 'Activate account ', // Subject line
+        template: 'register',
+        context: {
+          name: User?.name ?? User.email,
+          activationCode: C_ID
+        }
+      })
+    }
+    catch (err) {
+      console.error("Error sending email", err);
+    }
     return {
       _id: User._id,
     }

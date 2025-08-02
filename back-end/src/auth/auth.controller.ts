@@ -40,8 +40,12 @@ export class AuthController {
           activationCode: "123456",
         }
       })
-      .then(() => { })
-      .catch(() => { });
+      .then(() => {
+        console.log('Email sent successfully');
+      })
+      .catch((err) => {
+        console.error("Error sending email", err);
+      });
     return "ok";
   }
 

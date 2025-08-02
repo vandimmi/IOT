@@ -40,8 +40,12 @@ export class AuthController {
           activationCode: "123456",
         }
       })
-      .then(() => { })
-      .catch(() => { });
+      .then(() => {
+        console.log('Email sent successfully');
+      })
+      .catch((err) => {
+        console.error("Error sending email", err);
+      });
     return "ok";
   }
 
@@ -63,7 +67,10 @@ export class AuthController {
     user.isActive = true;
     await user.save();
     // Here you can add logic to activate the user account
-    return { message: 'User verified successfully', user };
+    return {
+      message: 'User verified successfully!',
+      telegramBotLink: `https://t.me/FireGuardd_bot`,
+    };
   }
 
 }

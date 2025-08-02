@@ -13,6 +13,7 @@ import { CreateAuthDto } from 'src/auth/dto/create-auth.dto';
 import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
 import { MailerService } from '@nestjs-modules/mailer';
+import { TelegramService } from 'src/telegram/telegram.service';
 
 @Injectable()
 export class UsersService {
@@ -20,6 +21,7 @@ export class UsersService {
     @InjectModel(User.name)
     private userModel: Model<User>,
     private readonly mailerService: MailerService,
+    private telegramService: TelegramService,
   ) { }
 
   isEmailExist = async (email: string) => {
@@ -110,17 +112,31 @@ export class UsersService {
       codeID: C_ID,
       codeExpire: dayjs().add(5, 'minutes').toDate(),
     })
-    this.mailerService.sendMail({
-      to: User.email, // list of receivers
-      subject: 'Activate account ', // Subject line
-      template: 'register',
-      context: {
-        name: User?.name ?? User.email,
-        activationCode: C_ID
-      }
-    })
+    try {
+      await this.mailerService.sendMail({
+        to: User.email, // list of receivers
+        subject: 'Activate account ', // Subject line
+        template: 'register',
+        context: {
+          name: User?.name ?? User.email,
+          activationCode: C_ID
+        }
+      })
+    }
+    catch (err) {
+      console.error("Error sending email", err);
+    }
     return {
       _id: User._id,
     }
+  }
+
+  async notifyUser(email: string, content: string) {
+    const user = await this.userModel.findOne({ email });
+    if (!user || !user.chat_id) {
+      throw new Error('User không có chatId');
+    }
+
+    await this.telegramService.sendMessage(user.chat_id, content);
   }
 }

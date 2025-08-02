@@ -1,10 +1,10 @@
 console.log("✅ Dashboard loaded at " + new Date().toLocaleString());
-const apiUrl = 'http://localhost:8080/api/in4-arduino/latest?limit=100000';
+const apiUrl = 'https://iot-be-5421.onrender.com/api/in4-arduino/latest?limit=100000';
 const token = localStorage.getItem('token');
 
 async function fetchAndUpdate() {
     const token = localStorage.getItem('token');
-    const apiUrl = 'http://localhost:8080/api/in4-arduino/latest?limit=100';
+    const apiUrl = 'https://iot-be-5421.onrender.com/api/in4-arduino/latest?limit=100';
 
     try {
         const res = await fetch(apiUrl, {
@@ -13,27 +13,30 @@ async function fetchAndUpdate() {
             }
         });
         const data = await res.json();
-        const latest = data[data.length - 1];
-        updateCards(latest);
         updateTable(data);  // Cập nhật mượt
         updateChart(data);  // Nếu cần vẽ lại biểu đồ
+        if (!data || data.length === 0) return;
+        const datareversed = data.reverse(); // Đảo ngược mảng để lấy bản ghi mới nhất
+        const latest = data[data.length - 1];
+        updateCards(latest);  // Cập nhật card
 
     } catch (e) {
         console.error("❌ Fetch error:", e);
     }
 }
-
 function updateCards(latest) {
-    // latest là phần tử cuối cùng trong mảng (dữ liệu mới nhất)
-    document.getElementById('value-mq2').innerText = latest.mq2;
-    document.getElementById('value-mq7').innerText = latest.mq7;
-    document.getElementById('value-mq135').innerText = latest.mq135;
+    if (!latest) return;
+    console.log("🔄 Cập nhật card với:", latest);
+
+    document.getElementById('value-mq2').innerText = latest.mq2 ?? "--";
+    document.getElementById('value-mq7').innerText = latest.mq7 ?? "--";
+    document.getElementById('value-mq135').innerText = latest.mq135 ?? "--";
     document.getElementById('value-temp').innerText = latest.temperature + '°C';
 
-    // ⚠️ Nếu bạn có logic về thiết bị ON/OFF thì thêm ở đây
     const isNormal = latest.flame !== 0 && latest.temperature < 60 && latest.mq2 < 600;
     document.getElementById('value-status').innerText = isNormal ? 'Ổn định' : 'Cảnh báo';
 }
+
 
 
 // 📊 Vẽ biểu đồ từ dữ liệu
@@ -114,22 +117,24 @@ function updateChart(data) {
 
 
 // 🧾 Đổ dữ liệu vào bảng
-let lastEntryId = null;
 
 function updateTable(data) {
     const table = document.querySelector('table');
-    const latestRows = data.slice(-100); // giữ đúng 100 dòng mới nhất
+    const latestRows = data.slice(-100); // lấy 100 dòng mới nhất (theo thời gian tăng dần)
 
-    // Nếu không có dữ liệu hoặc không thay đổi gì thì bỏ qua
     if (latestRows.length === 0) return;
-    const newestId = latestRows[latestRows.length - 1]._id;
-    if (newestId === lastEntryId) return;
 
-    // Xoá các dòng cũ (trừ dòng tiêu đề)
+    const latestEntry = latestRows[latestRows.length - 1]; // phần tử mới nhất
+    const currentJSON = JSON.stringify(latestEntry);
+
+    // Nếu giống hệt dữ liệu cũ → không cần cập nhật
+    lastEntryJSON = currentJSON;
+
+    // Xóa các dòng cũ (giữ dòng <th>)
     const oldRows = table.querySelectorAll("tr:not(:first-child)");
     oldRows.forEach(row => row.remove());
 
-    // Cập nhật bảng theo thứ tự thời gian TĂNG DẦN
+    // Cập nhật bảng theo thứ tự thời gian tăng dần
     latestRows.forEach((entry, index) => {
         const tr = document.createElement('tr');
 
@@ -146,35 +151,21 @@ function updateTable(data) {
         const message = document.createElement('td');
         const alerts = [];
 
-        if (entry.flame === 0) {
-            alerts.push("Phát hiện có lửa 🔥");
-        }
-        if (entry.temperature > 60) {
-            alerts.push("Nhiệt độ cao");
-        }
-        if (entry.mq2 > 700) {
-            alerts.push("Rò rỉ khí gas");
-        }
-        if (entry.mq7 > 1200) {
-            alerts.push("Nồng độ CO cao");
-        }
-        if (entry.mq135 > 900) {
-            alerts.push("Ô nhiễm không khí");
-        }
+        if (entry.flame === 0) alerts.push("Phát hiện có lửa 🔥");
+        if (entry.temperature > 60) alerts.push("Nhiệt độ cao");
+        if (entry.mq2 > 700) alerts.push("Rò rỉ khí gas");
+        if (entry.mq7 > 1200) alerts.push("Nồng độ CO cao");
+        if (entry.mq135 > 900) alerts.push("Nồng độ khí gây cháy cao");
 
-        if (alerts.length === 0) {
-            message.textContent = "Dữ liệu ổn định";
-        } else {
-            message.textContent = alerts.join(", ");
-        }
+        message.textContent = alerts.length > 0 ? alerts.join(", ") : "Mọi thứ bình thường 😊";
 
         tr.append(no, id, date, message);
         table.appendChild(tr);
     });
 
-    // Lưu lại ID mới nhất để so sánh
-    lastEntryId = newestId;
+    console.log("✅ Bảng đã cập nhật lúc", new Date().toLocaleTimeString());
 }
+
 
 
 

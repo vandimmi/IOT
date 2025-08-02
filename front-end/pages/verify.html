@@ -40,7 +40,7 @@
             const codeID = document.getElementById('codeID').value;
 
             try {
-                const res = await fetch('http://localhost:8080/api/auth/verify', {
+                const res = await fetch('https://iot-be-5421.onrender.com/api/auth/verify', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ codeID })
@@ -49,7 +49,7 @@
                 const data = await res.json();
 
                 if (res.ok) {
-                    alert("✅ Account activated successfully!");
+                    alert("✅ Account activated successfully!\n" + "This is Telegram chatbot link: " + data.telegramBotLink);
                     localStorage.removeItem('pendingVerification'); // Xóa cờ xác minh
                     window.location.href = "login.html";
                 } else {

@@ -10,6 +10,9 @@ import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/passport/jwt-auth.gaurd';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { TelegramModule } from './telegram/telegram.module';
+import { MqttModule } from './mqtt/mqtt.module';
+import { MqttService } from './mqtt/mqtt.service';
 
 @Module({
   imports: [
@@ -17,6 +20,8 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
     UsersModule,
     In4ArduinoModule,
     AuthModule,
+    TelegramModule,
+    MqttModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env']
@@ -59,13 +64,14 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 
     }),
   ],
-  controllers: [AppController],
+  controllers: [AppController, MqttService],
   providers: [
     AppService,
     {
       provide: 'APP_GUARD',
       useClass: JwtAuthGuard,
-    }
+    },
+    MqttService,
   ],
 })
 export class AppModule { }

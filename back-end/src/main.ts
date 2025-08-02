@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import { bot } from './telegram/telegram.bot';
-import { Transport, MicroserviceOptions } from '@nestjs/microservices';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,14 +11,14 @@ async function bootstrap() {
 
   const PORT = configService.get('PORT');
   app.connectMicroservice<MicroserviceOptions>({
-  transport: Transport.MQTT,
-  options: {
-    url: 'mqtts://195d12f952ea4bbba0db56a9e044028f.s1.eu.hivemq.cloud:8883',
-    username: 'NPT100', // nếu bạn đã cấu hình
-    password: 'Phuctho100',
-    //clientId: 'nestjs-backend-' + uuidv4(),
-  },
-});
+    transport: Transport.MQTT,
+    options: {
+      url: 'mqtts://195d12f952ea4bbba0db56a9e044028f.s1.eu.hivemq.cloud:8883',
+      username: 'NPT100', // nếu bạn đã cấu hình
+      password: 'Phuctho100',
+      //clientId: 'nestjs-backend-' + uuidv4(),
+    },
+  });
 
 
   app.setGlobalPrefix('api', { exclude: [''] });

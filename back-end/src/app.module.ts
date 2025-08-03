@@ -13,6 +13,9 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { TelegramModule } from './telegram/telegram.module';
 import { MqttModule } from './mqtt/mqtt.module';
 import { MqttService } from './mqtt/mqtt.service';
+import { SettingService } from './settingPage/setting.service';
+import { SettingController } from './settingPage/setting.controller';
+import { SettingModule } from './settingPage/setting.module';
 
 @Module({
   imports: [
@@ -22,6 +25,7 @@ import { MqttService } from './mqtt/mqtt.service';
     AuthModule,
     TelegramModule,
     MqttModule,
+    SettingModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env']

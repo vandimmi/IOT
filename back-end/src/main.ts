@@ -24,7 +24,8 @@ async function bootstrap() {
   app.setGlobalPrefix('api', { exclude: [''] });
 
   app.enableCors({
-    origin: configService.get('https://iot-5.onrender.com') || '*',
+    //origin: configService.get('https://iot-5.onrender.com') || '*',
+    origin: configService.get('http://localhost:5500') || '*',
   });
 
   app.useGlobalPipes(new ValidationPipe({
@@ -36,7 +37,7 @@ async function bootstrap() {
     console.log('✅ MQTT microservice is running');
   });
   await app.listen(process.env.PORT ?? 8080);
-  await bot.start();
-  console.log("✅ Telegram bot started");
+  // await bot.start();
+  // console.log("✅ Telegram bot started");
 }
 bootstrap();

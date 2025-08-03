@@ -56,9 +56,9 @@ function updateCards(latest) {
     if (!latest) return;
     console.log("🔄 Cập nhật card với:", latest);
 
-    document.getElementById('value-mq2').innerText = latest.mq2 ?? "--";
-    document.getElementById('value-mq7').innerText = latest.mq7 ?? "--";
-    document.getElementById('value-mq135').innerText = latest.mq135 ?? "--";
+    document.getElementById('value-mq2').innerText = latest.mq2 / 4095 + '%' ?? "--";
+    document.getElementById('value-mq7').innerText = latest.mq7 / 4095 + '%' ?? "--";
+    document.getElementById('value-mq135').innerText = latest.mq135 / 4095 + '%' ?? "--";
     document.getElementById('value-temp').innerText = latest.temperature + '°C';
 
     const isNormal = latest.flame !== 0 && latest.temperature < 60 && latest.mq2 < 600;

@@ -62,6 +62,7 @@
         if (res.ok) {
           alert("Login successful!");
           localStorage.setItem("token", data.access_token);
+          localStorage.setItem("email", email);
           window.location.href = "dashboard.html"; // cùng thư mục
 
         } else {

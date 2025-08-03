@@ -63,7 +63,8 @@ body {
 }
 
 .chart-container,
-.water-container {
+.water-container,
+.alarm-container {
   flex: 1;
   min-width: 300px;
   padding: 20px;
@@ -73,8 +74,11 @@ body {
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.05);
 }
 
-.water-container {
+.water-container,
+.alarm-container {
   max-width: 380px;
+  margin: auto;
+  min-height: 160px;
 }
 
 .gauge-container {
@@ -104,6 +108,15 @@ body {
   font-weight: bold;
   color: #333;
 }
+
+#alarm-button {
+  padding: 10px 30px;
+  border: none;
+  background-color: #ff5722;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
 
 /* Table */
 table {

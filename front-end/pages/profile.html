@@ -148,7 +148,8 @@
 
     async function loadUserInfo() {
       try {
-        const res = await fetch("https://iot-be-5421.onrender.com/api/users/me", {
+        const email = document.getElementById("readonly-email").innerText;
+        const res = await fetch(`https://iot-be-5421.onrender.com/api/users/${email}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }

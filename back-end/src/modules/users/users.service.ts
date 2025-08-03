@@ -62,8 +62,14 @@ export class UsersService {
     return { results, totalItems, totalPages, current, pageSize };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  findOne(id: string) {
+    if (mongoose.isValidObjectId(id)) {
+      return this.userModel.findById(id).select('-password');
+    } else if (isEmail(id)) {
+      return this.userModel.findOne({ email: id }).select('-password');
+    } else {
+      throw new BadRequestException('Invalid user ID or email');
+    }
   }
 
   async findByEmail(email: string) {

@@ -2,7 +2,35 @@ console.log("✅ Dashboard loaded at " + new Date().toLocaleString());
 const apiUrl = 'https://iot-be-5421.onrender.com/api/in4-arduino/latest?limit=100000';
 const token = localStorage.getItem('token');
 
+let thresholds = {}
+
+async function fetchThresholds() {
+    try {
+        const token = localStorage.getItem("token");
+        const res = await fetch("https://iot-be-5421.onrender.com/api/settings", {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+        if (!res.ok) throw new Error("Không thể lấy dữ liệu ngưỡng");
+        const data = await res.json();
+
+        // Nếu API trả về mảng (ví dụ [{ MQ2: 500, ... }]) thì dùng data[0]
+        thresholds = {
+            MQ2: data[0]?.MQ2 || 700,
+            MQ7: data[0]?.MQ7 || 1200,
+            MQ135: data[0]?.MQ135 || 900,
+            temp: data[0]?.temp || 60
+        };
+
+        console.log("📥 Ngưỡng lấy từ server:", thresholds);
+    } catch (err) {
+        console.error("❌ Lỗi khi lấy ngưỡng:", err.message);
+    }
+}
+
 async function fetchAndUpdate() {
+    await fetchThresholds(); // Đảm bảo ngưỡng được cập nhật trước
     const token = localStorage.getItem('token');
     const apiUrl = 'https://iot-be-5421.onrender.com/api/in4-arduino/latest?limit=100';
 
@@ -152,10 +180,10 @@ function updateTable(data) {
         const alerts = [];
 
         if (entry.flame === 0) alerts.push("Phát hiện có lửa 🔥");
-        if (entry.temperature > 60) alerts.push("Nhiệt độ cao");
-        if (entry.mq2 > 700) alerts.push("Rò rỉ khí gas");
-        if (entry.mq7 > 1200) alerts.push("Nồng độ CO cao");
-        if (entry.mq135 > 900) alerts.push("Nồng độ khí gây cháy cao");
+        if (entry.temperature > thresholds.temp) alerts.push("Nhiệt độ cao");
+        if (entry.mq2 > thresholds.MQ2) alerts.push("Rò rỉ khí gas");
+        if (entry.mq7 > thresholds.MQ7) alerts.push("Nồng độ CO cao");
+        if (entry.mq135 > thresholds.MQ135) alerts.push("Nồng độ khí gây cháy cao");
 
         message.textContent = alerts.length > 0 ? alerts.join(", ") : "Mọi thứ bình thường 😊";
 
@@ -177,4 +205,8 @@ function updateWaterLevel(level) {
 }
 
 
-setInterval(fetchAndUpdate, 5000);
+(async function init() {
+    await fetchThresholds();
+    fetchAndUpdate();
+    setInterval(fetchAndUpdate, 5000);
+})();

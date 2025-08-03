@@ -35,7 +35,8 @@ export class UsersController {
   @UseGuards(AuthGuard('jwt'))
   @Get(':email')
   async findByEmail(@Param('email') email: string) {
-    return await this.usersService.findByEmail(email);
+    const user = await this.usersService.findByEmail(email);
+  return user;
   }
 
   @Delete(':id')

@@ -62,18 +62,22 @@ export class UsersService {
     return { results, totalItems, totalPages, current, pageSize };
   }
 
-  findOne(id: string) {
-    if (mongoose.isValidObjectId(id)) {
-      return this.userModel.findById(id).select('-password');
-    } else if (isEmail(id)) {
-      return this.userModel.findOne({ email: id }).select('-password');
-    } else {
-      throw new BadRequestException('Invalid user ID or email');
+  findOne(email: string) {
+    if (!mongoose.isValidObjectId(email)) {
+      throw new BadRequestException('Invalid user ID');
     }
+    return this.userModel.findById(email).select('-password');
   }
 
   async findByEmail(email: string) {
-    return await this.userModel.findOne({ email })
+    if (!isEmail(email)) {
+      throw new BadRequestException('Invalid email format');
+    }
+    const user = await this.userModel.findOne({ email }).select('-password');
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    return user;
   }
 
   async findByCodeID(codeID: string) {

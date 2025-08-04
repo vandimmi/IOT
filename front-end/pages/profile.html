@@ -153,7 +153,7 @@
             Authorization: `Bearer ${token}`
           }
         });
-        alert("Status: " + res.status);
+        alert("email: " + email);
         const data = await res.json();
         alert("User data: " + JSON.stringify(data));
 

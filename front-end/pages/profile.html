@@ -140,7 +140,6 @@
   <script>
     const token = localStorage.getItem("token");
     const email = localStorage.getItem("email");
-    alert("email0: " + email);
     if (!token) {
       alert("Unauthorized. Please login.");
       window.location.href = "login.html";
@@ -148,13 +147,11 @@
 
     async function loadUserInfo() {
       try {
-        const email = document.getElementById("readonly-email").innerText;
         const res = await fetch(`https://iot-be-5421.onrender.com/api/users/${email}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
-        alert("email: " + email);
         const data = await res.json();
         alert("User data: " + JSON.stringify(data));
 

@@ -140,6 +140,7 @@
   <script>
     const token = localStorage.getItem("token");
     const email = localStorage.getItem("email");
+    alert("email0: " + email);
     if (!token) {
       alert("Unauthorized. Please login.");
       window.location.href = "login.html";

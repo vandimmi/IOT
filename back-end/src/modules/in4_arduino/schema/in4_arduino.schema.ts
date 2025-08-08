@@ -20,6 +20,9 @@ export class in4_arduino {
 
     @Prop()
     flame: boolean
+
+    @Prop({ default: 'example@gmail.com' })
+    email: string;
 }
 
 export const in4_arduinoSchema = SchemaFactory.createForClass(in4_arduino);

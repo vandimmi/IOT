@@ -13,9 +13,9 @@ async function bootstrap() {
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.MQTT,
     options: {
-      url: 'mqtts://195d12f952ea4bbba0db56a9e044028f.s1.eu.hivemq.cloud:8883',
-      username: 'NPT100', // nếu bạn đã cấu hình
-      password: 'Phuctho100',
+      url: configService.get<string>('MQTT_URL'),
+      username: configService.get<string>('MQTT_USERNAME'),
+      password: configService.get<string>('MQTT_PASSWORD'),
       //clientId: 'nestjs-backend-' + uuidv4(),
     },
   });

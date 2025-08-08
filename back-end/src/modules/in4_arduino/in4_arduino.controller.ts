@@ -32,9 +32,9 @@ export class In4ArduinoController {
 
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('latest') // 👈 đặt trước route có :id
-  async getLatest(@Query('limit') limit: number = 100000) {
-    return this.in4ArduinoService.findLatest(limit);
+  @Get('latest') 
+  async getLatest(@Query('limit') limit: number = 100000, @Query('email') email?: string) {
+    return this.in4ArduinoService.findLatest(limit, email);
   }
 
   @Get(':id')

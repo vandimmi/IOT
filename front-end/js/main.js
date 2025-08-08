@@ -11,6 +11,7 @@ fetch('../components/header.html')
                 e.preventDefault();
                 localStorage.removeItem("token"); // Xoá token
                 localStorage.removeItem("verifyEmail"); // Xoá thông tin người dùng
+                localStorage.removeItem("email"); // Xoá email
                 window.location.href = "../pages/index.html"; // Chuyển về trang chính
             });
         }

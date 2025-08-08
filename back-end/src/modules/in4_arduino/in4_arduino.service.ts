@@ -35,8 +35,12 @@ export class In4ArduinoService {
     return await this.in4ArduinoModel.create(dto);
   }
 
-  async findLatest(limit: number = 100000) {
-    return this.in4ArduinoModel.find().sort({ createdAt: -1 }).limit(limit);
+  async findLatest(limit: number = 100000, email?: string) {
+    const query: any = {};
+    if (email) {
+      query.email = email;
+    }
+    return this.in4ArduinoModel.find(query).sort({ createdAt: -1 }).limit(limit);
   }
 
 

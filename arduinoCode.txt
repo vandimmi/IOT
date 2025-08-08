@@ -1,14 +1,16 @@
-#include <WiFi.h>
-#include <WiFiClientSecure.h>
-#include <PubSubClient.h>
-#include <ArduinoJson.h>
-#include <OneWire.h>
-#include <DallasTemperature.h>
+#include <WiFi.h>             // thư viện dùng để kết nối Wifi của ESP32
+#include <WiFiClientSecure.h> // thư viện dùng để tạo kết nối http/mqtt qua TLS
+#include <PubSubClient.h>     // thư viện dùng để giao tiếp với mqtt broker
+#include <ArduinoJson.h>      // thư viện dùng để tạo và xử lý dữ liệu JSON
+#include <OneWire.h>          // thư viện dùng cho cảm biến nhiệt độ
+#include <DallasTemperature.h>// thư viện dùng cho cảm biến nhiệt độ
 
-// ===== WiFi & MQTT Info =====
-const char* ssid = "CLCK23";
+// ===== WiFi Info =====
+// cấu hình wifi defaul (chưa làm tính năng cho người dùng tự cấu hình)
+const char* ssid = "CLCK23";      
 const char* password = "02092023";
 
+// ===== MQTT Info =====
 const char* mqtt_server = "195d12f952ea4bbba0db56a9e044028f.s1.eu.hivemq.cloud";
 const int mqtt_port = 8883;  // TLS port
 const char* mqtt_user = "NPT100";
@@ -22,15 +24,16 @@ const char* mqtt_topic = "esp32/data";
 #define FLAME_PIN   34
 #define ONE_WIRE_BUS 4
 
+
+// Khởi tạo giao tiếp với cảm biển nhiệt độ
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
 // ===== MQTT & WiFiClientSecure =====
-WiFiClientSecure wifiClient;
-PubSubClient client(wifiClient);
+WiFiClientSecure wifiClient;    // tạo kết nối bảo mật TLS
+PubSubClient client(wifiClient);// MQTT client sử dụng kết nói bảo mật, sử dụng wifiClient làm kênh kết nối
 
 // ===== Certificate check (optional) =====
-// Bạn có thể dùng `wifiClient.setInsecure();` để bỏ qua kiểm tra chứng chỉ (không khuyến khích cho sản phẩm thật)
 void setup_wifi() {
   Serial.print("🔌 Đang kết nối WiFi");
   WiFi.begin(ssid, password);
@@ -62,16 +65,18 @@ void setup() {
   Serial.begin(115200);
   sensors.begin();
   pinMode(FLAME_PIN, INPUT);
+  
+  // chân analog sẽ tự nhận biết INPUT hay OUTPUT thông qua lệnh read hoặc write nên không cần khai báo
 
-  setup_wifi();
-  client.setServer(mqtt_server, mqtt_port);
+  setup_wifi();                             // kết nối wifi
+  client.setServer(mqtt_server, mqtt_port); // cấu hình địa chỉ MQTT
 }
 
 void loop() {
   if (!client.connected()) {
-    reconnect();
+    reconnect(); // tự động kết nối lại với mqtt nếu mất kết nối
   }
-  client.loop();
+  client.loop(); // duy trì kết nối
 
   // Đọc cảm biến
   sensors.requestTemperatures();

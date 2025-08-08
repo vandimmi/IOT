@@ -10,7 +10,7 @@ export class MqttService {
         private readonly settingService: SettingService,
     ) { }
 
-    @EventPattern('esp32/data')
+    @EventPattern('sensor/data')
     async handleMessage(@Payload() data: any, @Ctx() context: MqttContext) {
         console.log('📩 MQTT Received:', data);
 

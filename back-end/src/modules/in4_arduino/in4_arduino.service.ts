@@ -31,7 +31,7 @@ export class In4ArduinoService {
     }).exec();
   }
 
-  async save(dto: { mq2: number; mq7: number; mq135: number; temperature: number; flame: boolean }) {
+  async save(dto: { mq2: number; mq7: number; mq135: number; temperature: number; flame: boolean; wifissid?: string; wifipass?: string; email?: string }) {
     return await this.in4ArduinoModel.create(dto);
   }
 

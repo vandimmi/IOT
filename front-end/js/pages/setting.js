@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function sendToEsp32(payload, token) {
     try {
-        const res = await fetch("https://iot-be-5421.onrender.com/api/esp32/config", {
+        const res = await fetch("https://iot-be-5421.onrender.com/api/mqtt/esp32/config", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

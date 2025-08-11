@@ -1,21 +1,27 @@
-#include <WiFi.h>             // thư viện dùng để kết nối Wifi của ESP32
-#include <WiFiClientSecure.h> // thư viện dùng để tạo kết nối http/mqtt qua TLS
-#include <PubSubClient.h>     // thư viện dùng để giao tiếp với mqtt broker
-#include <ArduinoJson.h>      // thư viện dùng để tạo và xử lý dữ liệu JSON
-#include <OneWire.h>          // thư viện dùng cho cảm biến nhiệt độ
-#include <DallasTemperature.h>// thư viện dùng cho cảm biến nhiệt độ
+#include <WiFi.h>
+#include <WiFiClientSecure.h>
+#include <PubSubClient.h>
+#include <ArduinoJson.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
+#include <Preferences.h>
+#include <WebServer.h>
+#include <DNSServer.h> // Thêm để hỗ trợ captive portal
 
-// ===== WiFi Info =====
-// cấu hình wifi defaul (chưa làm tính năng cho người dùng tự cấu hình)
-const char* ssid = "CLCK23";      
-const char* password = "02092023";
+// ===== Lưu Wi-Fi vào NVS =====
+Preferences preferences;
+WebServer server(80);
+DNSServer dnsServer; // DNS server cho captive portal
 
 // ===== MQTT Info =====
 const char* mqtt_server = "195d12f952ea4bbba0db56a9e044028f.s1.eu.hivemq.cloud";
-const int mqtt_port = 8883;  // TLS port
+const int mqtt_port = 8883;
 const char* mqtt_user = "NPT100";
 const char* mqtt_pass = "Phuctho100";
-const char* mqtt_topic = "sensor/data";
+const char* mqtt_topic_data = "sensor/data";
+const char* mqtt_topic_config = "device/config";
+String wifissid;
+String wifipass;
 
 // ===== Sensors Setup =====
 #define MQ2_PIN     32
@@ -24,38 +30,152 @@ const char* mqtt_topic = "sensor/data";
 #define FLAME_PIN   34
 #define ONE_WIRE_BUS 4
 
-
-// Khởi tạo giao tiếp với cảm biển nhiệt độ
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
 // ===== MQTT & WiFiClientSecure =====
-WiFiClientSecure wifiClient;    // tạo kết nối bảo mật TLS
-PubSubClient client(wifiClient);// MQTT client sử dụng kết nói bảo mật, sử dụng wifiClient làm kênh kết nối
+WiFiClientSecure wifiClient;
+PubSubClient client(wifiClient);
 
-// ===== Certificate check (optional) =====
-void setup_wifi() {
-  Serial.print("🔌 Đang kết nối WiFi");
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
+// ===== Config cảnh báo =====
+float mq2_threshold = 300;
+float mq7_threshold = 300;
+float mq135_threshold = 300;
+float temp_threshold = 50;
+
+// ===== Lưu & tải Wi-Fi config =====
+void saveWiFiConfig(const char* ssid, const char* pass) {
+  preferences.begin("wifi", false);
+  preferences.putString("ssid", ssid);
+  preferences.putString("pass", pass);
+  preferences.end();
+}
+
+void loadWiFiConfig(String &ssid, String &pass) {
+  preferences.begin("wifi", true);
+  ssid = preferences.getString("ssid", "");
+  pass = preferences.getString("pass", "");
+  preferences.end();
+}
+
+// ===== Setup web routes =====
+void setupWebServerRoutes() {
+  server.on("/", HTTP_GET, []() {
+    server.send(200, "text/html",
+      "<h2>ESP32 Wi-Fi Config</h2>"
+      "<form method='POST' action='/save'>"
+      "SSID: <input name='ssid'><br>"
+      "Password: <input name='pass' type='password'><br>"
+      "<input type='submit' value='Save'>"
+      "</form>");
+  });
+
+  server.on("/save", HTTP_POST, []() {
+    String ssid = server.arg("ssid");
+    String pass = server.arg("pass");
+    if (ssid.length() > 0) {
+      saveWiFiConfig(ssid.c_str(), pass.c_str());
+      server.send(200, "text/plain", "Wi-Fi saved! Restarting...");
+      delay(2000);
+      ESP.restart();
+    } else {
+      server.send(200, "text/plain", "SSID không hợp lệ!");
+    }
+  });
+
+  // Redirect tất cả request khác về "/"
+  server.onNotFound([]() {
+    server.sendHeader("Location", String("http://") + WiFi.softAPIP().toString(), true);
+    server.send(302, "text/plain", "");
+  });
+}
+
+// ===== Access Point (AP Mode) =====
+void startAP() {
+  WiFi.disconnect(true);
+  delay(100);
+  WiFi.mode(WIFI_AP);
+  WiFi.softAP("ESP32_Config", "12345678");
+
+  IPAddress apIP = WiFi.softAPIP();
+  Serial.println("📡 AP Mode: ESP32_Config / Pass: 12345678");
+  Serial.print("IP AP: ");
+  Serial.println(apIP);
+
+  // Khởi động DNS Server → chặn tất cả domain, trỏ về ESP32
+  dnsServer.start(53, "*", apIP);
+
+  setupWebServerRoutes();
+  server.begin();
+}
+
+// ===== Kết nối Wi-Fi =====
+void connectWiFi() {
+  String ssid, pass;
+  loadWiFiConfig(ssid, pass);
+
+  if (ssid.length() == 0) {
+    Serial.println("⚠️ Chưa có Wi-Fi → bật AP");
+    startAP();
+    return;
+  }
+
+  WiFi.begin(ssid.c_str(), pass.c_str());
+  wifissid = ssid;
+  wifipass = pass;
+  Serial.printf("🔌 Connecting to %s, %s...\n", ssid.c_str(), pass.c_str());
+
+  unsigned long startTime = millis();
+  while (WiFi.status() != WL_CONNECTED && millis() - startTime < 15000) {
     delay(500);
     Serial.print(".");
   }
-  Serial.println("\n✅ Đã kết nối WiFi");
 
-  wifiClient.setInsecure(); // ⚠️ Không kiểm tra chứng chỉ (nếu cần bảo mật cao, bạn cần tải chứng chỉ và dùng `wifiClient.setCACert(...)`)
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("\n✅ Connected!");
+    Serial.println(WiFi.localIP());
+    wifiClient.setInsecure();
+  } else {
+    Serial.println("\n❌ Failed → bật AP");
+    startAP();
+  }
 }
 
-void reconnect() {
+// ===== MQTT callback =====
+void mqttCallback(char* topic, byte* payload, unsigned int length) {
+  String message;
+  for (unsigned int i = 0; i < length; i++) {
+    message += (char)payload[i];
+  }
+  Serial.printf("📩 MQTT [%s]: %s\n", topic, message.c_str());
+
+  if (String(topic) == mqtt_topic_config) {
+    StaticJsonDocument<256> doc;
+    if (deserializeJson(doc, message)) return;
+
+    if (doc.containsKey("ssid") && doc.containsKey("pass")) {
+      saveWiFiConfig(doc["ssid"], doc["pass"]);
+      delay(2000);
+      ESP.restart();
+    }
+    if (doc.containsKey("mq2")) mq2_threshold = doc["mq2"];
+    if (doc.containsKey("mq7")) mq7_threshold = doc["mq7"];
+    if (doc.containsKey("mq135")) mq135_threshold = doc["mq135"];
+    if (doc.containsKey("temp")) temp_threshold = doc["temp"];
+  }
+}
+
+// ===== MQTT reconnect =====
+void reconnectMQTT() {
   while (!client.connected()) {
-    Serial.print("🔄 Kết nối MQTT TLS...");
+    Serial.print("🔄 MQTT reconnect...");
     String clientId = "ESP32Client-" + String(random(0xffff), HEX);
     if (client.connect(clientId.c_str(), mqtt_user, mqtt_pass)) {
-      Serial.println("✅ MQTT đã kết nối");
+      Serial.println("✅ MQTT connected");
+      client.subscribe(mqtt_topic_config);
     } else {
-      Serial.print("❌ Lỗi MQTT: ");
-      Serial.print(client.state());
-      Serial.println(" → thử lại sau 5s");
+      Serial.print("❌ MQTT error: ");
+      Serial.println(client.state());
       delay(5000);
     }
   }
@@ -65,46 +185,50 @@ void setup() {
   Serial.begin(115200);
   sensors.begin();
   pinMode(FLAME_PIN, INPUT);
-  
-  // chân analog sẽ tự nhận biết INPUT hay OUTPUT thông qua lệnh read hoặc write nên không cần khai báo
 
-  setup_wifi();                             // kết nối wifi
-  client.setServer(mqtt_server, mqtt_port); // cấu hình địa chỉ MQTT
+  connectWiFi();
+  client.setServer(mqtt_server, mqtt_port);
+  client.setCallback(mqttCallback);
 }
 
 void loop() {
-  if (!client.connected()) {
-    reconnect(); // tự động kết nối lại với mqtt nếu mất kết nối
+  dnsServer.processNextRequest(); // Cho captive portal hoạt động
+  server.handleClient();          // Xử lý web request
+
+  if (WiFi.status() == WL_CONNECTED) {
+    if (!client.connected()) {
+      reconnectMQTT();
+    }
+    client.loop();
+
+    sensors.requestTemperatures();
+    float temperature = sensors.getTempCByIndex(0);
+    int mq2 = analogRead(MQ2_PIN);
+    int mq7 = analogRead(MQ7_PIN);
+    int mq135 = analogRead(MQ135_PIN);
+    int flame = digitalRead(FLAME_PIN);
+
+    Serial.printf("🌡 Temp: %.2f | MQ2: %d | MQ7: %d | MQ135: %d | Flame: %s\n",
+                  temperature, mq2, mq7, mq135, flame == LOW ? "🔥" : "OK");
+
+    // if (temperature > temp_threshold) Serial.println("⚠️ Cảnh báo: Nhiệt độ cao!");
+    // if (mq2 > mq2_threshold) Serial.println("⚠️ Cảnh báo: MQ2 cao!");
+    // if (mq7 > mq7_threshold) Serial.println("⚠️ Cảnh báo: MQ7 cao!");
+    // if (mq135 > mq135_threshold) Serial.println("⚠️ Cảnh báo: MQ135 cao!");
+
+    StaticJsonDocument<256> doc;
+    doc["temperature"] = temperature;
+    doc["mq2"] = mq2;
+    doc["mq7"] = mq7;
+    doc["mq135"] = mq135;
+    doc["flame"] = flame;
+    doc["wifissid"] = wifissid;
+    doc["wifipass"] = wifipass;
+
+    char payload[256];
+    serializeJson(doc, payload);
+    client.publish(mqtt_topic_data, payload);
+
+    delay(10000);
   }
-  client.loop(); // duy trì kết nối
-
-  // Đọc cảm biến
-  sensors.requestTemperatures();
-  float temperature = sensors.getTempCByIndex(0);
-  int mq2 = analogRead(MQ2_PIN);
-  int mq7 = analogRead(MQ7_PIN);
-  int mq135 = analogRead(MQ135_PIN);
-  int flame = digitalRead(FLAME_PIN);
-
-  // In ra Serial
-  Serial.printf("🌡 Temp: %.2f | MQ2: %d | MQ7: %d | MQ135: %d | Flame: %s\n",
-                temperature, mq2, mq7, mq135, flame == LOW ? "🔥" : "OK");
-
-  // Tạo JSON payload
-  StaticJsonDocument<256> doc;
-  doc["temperature"] = temperature;
-  doc["mq2"] = mq2;
-  doc["mq7"] = mq7;
-  doc["mq135"] = mq135;
-  doc["flame"] = flame;
-
-  char payload[256];
-  serializeJson(doc, payload);
-
-  // Gửi lên topic MQTT
-  client.publish(mqtt_topic, payload);
-
-  delay(10000); // mỗi 10 giây
 }
-
-

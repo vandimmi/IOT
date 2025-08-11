@@ -22,6 +22,8 @@ export class MqttService {
                 mq135: Number(data.mq135),
                 temperature: Number(data.temperature),
                 flame: Boolean(data.flame),
+                wifissid: String(data.wifissid || ''), // Thêm trường wifissid
+                wifipass: String(data.wifipass || ''), // Thêm trường
             };
 
             // Gọi service lưu vào MongoDB
@@ -32,16 +34,16 @@ export class MqttService {
         }
     }
 
-    @EventPattern('esp32/getThresholds')
-    async getThresholds(@Ctx() context: MqttContext) {
-        console.log('📩 MQTT Request for thresholds');
-        try {
-            const thresholds = await this.settingService.getThresholds();
-            console.log('📤 Sending thresholds:', thresholds);
-            return thresholds;
-        } catch (err) {
-            console.error('❌ Error fetching thresholds:', err);
-            throw err; // Rethrow to let the caller handle it
-        }
-    }
+    // @EventPattern('esp32/getThresholds')
+    // async getThresholds(@Ctx() context: MqttContext) {
+    //     console.log('📩 MQTT Request for thresholds');
+    //     try {
+    //         const thresholds = await this.settingService.getThresholds();
+    //         console.log('📤 Sending thresholds:', thresholds);
+    //         return thresholds;
+    //     } catch (err) {
+    //         console.error('❌ Error fetching thresholds:', err);
+    //         throw err; // Rethrow to let the caller handle it
+    //     }
+    // }
 }

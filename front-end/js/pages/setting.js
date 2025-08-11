@@ -8,13 +8,15 @@ document.addEventListener("DOMContentLoaded", () => {
             MQ7: parseInt(document.getElementById("MQ7").value),
             MQ135: parseInt(document.getElementById("MQ135").value),
             temp: parseInt(document.getElementById("temp").value),
+            wifissid: '', // Thêm trường này nếu cần
+            wifipass: '' // Thêm trường này nếu cần
         };
 
         const token = localStorage.getItem("token");
 
         try {
             // const res = await fetch("http://localhost:8080/api/settings", {
-            const res = await fetch("https://iot-be-5421.onrender.com/api/settings", {
+            const res = await fetch("https://iot-be-5421.onrender.com/api/settings/create", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -39,7 +41,7 @@ async function loadThresholds() {
 
     try {
         // const res = await fetch("http://localhost:8080/api/settings", {
-        const res = await fetch("https://iot-be-5421.onrender.com/api/settings", {
+        const res = await fetch("https://iot-be-5421.onrender.com/api/settings/get?limit=1", {
             headers: {
                 "Authorization": `Bearer ${token}`
             }

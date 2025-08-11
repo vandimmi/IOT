@@ -68,7 +68,7 @@ import { SettingModule } from './settingPage/setting.module';
 
     }),
   ],
-  controllers: [AppController, MqttService],
+  controllers: [AppController],
   providers: [
     AppService,
     {

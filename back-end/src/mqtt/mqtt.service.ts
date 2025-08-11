@@ -1,14 +1,43 @@
-import { Controller } from '@nestjs/common';
-import { EventPattern, Payload, Ctx, MqttContext } from '@nestjs/microservices';
+import { Body, Controller, Post } from '@nestjs/common';
+import { EventPattern, Payload, Ctx, MqttContext, Transport, ClientProxyFactory, ClientProxy } from '@nestjs/microservices';
 import { In4ArduinoService } from '../modules/in4_arduino/in4_arduino.service';
 import { SettingService } from '../settingPage/setting.service';
+import { ConfigService } from '@nestjs/config/dist/config.service';
+import { lastValueFrom } from 'rxjs';
+
+class EspConfigDto {
+    ssid?: string;
+    pass?: string;
+    mq2?: number;
+    mq7?: number;
+    mq135?: number;
+    temp?: number;
+}
 
 @Controller()
 export class MqttService {
+    private mqttPub: ClientProxy;
     constructor(
         private readonly in4ArduinoService: In4ArduinoService,
         private readonly settingService: SettingService,
-    ) { }
+        private readonly configService: ConfigService,
+    ) {
+        this.mqttPub = ClientProxyFactory.create({
+            transport: Transport.MQTT,
+            options: {
+                url: this.configService.get<string>('MQTT_URL'),
+                username: this.configService.get<string>('MQTT_USERNAME'),
+                password: this.configService.get<string>('MQTT_PASSWORD'),
+                // Nếu dùng HiveMQ Cloud TLS thì URL phải là mqtts://...:8883
+            },
+        });
+    }
+    @Post('esp32/config')
+    async sendEspConfig(@Body() dto: EspConfigDto) {
+        const topic = 'device/config'; // ESP32 đang subscribe topic này
+        await lastValueFrom(this.mqttPub.emit(topic, dto));
+        return { ok: true, topic, sent: dto };
+    }
 
     @EventPattern('sensor/data')
     async handleMessage(@Payload() data: any, @Ctx() context: MqttContext) {
@@ -33,17 +62,4 @@ export class MqttService {
             console.error('❌ Lỗi khi lưu dữ liệu:', err);
         }
     }
-
-    // @EventPattern('esp32/getThresholds')
-    // async getThresholds(@Ctx() context: MqttContext) {
-    //     console.log('📩 MQTT Request for thresholds');
-    //     try {
-    //         const thresholds = await this.settingService.getThresholds();
-    //         console.log('📤 Sending thresholds:', thresholds);
-    //         return thresholds;
-    //     } catch (err) {
-    //         console.error('❌ Error fetching thresholds:', err);
-    //         throw err; // Rethrow to let the caller handle it
-    //     }
-    // }
 }

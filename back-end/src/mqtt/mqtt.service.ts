@@ -1,4 +1,5 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { EventPattern, Payload, Ctx, MqttContext, Transport, ClientProxyFactory, ClientProxy } from '@nestjs/microservices';
 import { In4ArduinoService } from '../modules/in4_arduino/in4_arduino.service';
 import { SettingService } from '../settingPage/setting.service';
@@ -32,14 +33,19 @@ export class MqttService {
             },
         });
     }
-    @Post('esp32/config')
-    async sendEspConfig(@Body() dto: EspConfigDto) {
-        const topic = 'device/config'; // ESP32 đang subscribe topic này
-        console.log('HTTP /esp32/config payload =', dto);
-        await lastValueFrom(this.mqttPub.emit(topic, dto));
-        console.log('📤 MQTT Sent to topic:', topic, 'with data:', dto);
-        console.log('✅ Published to device/config');
-        return { ok: true, topic, sent: dto };
+    @Post('esp32/config') // => POST /api/esp32/config
+    async sendConfig(@Body() dto: any, @Res() res: Response) {
+        try {
+            console.log('HTTP /esp32/config ->', dto);
+            await this.mqttPub.connect(); // đảm bảo đã kết nối broker, log lỗi nếu fail
+            console.log('✅ MQTT client connected');
+            await lastValueFrom(this.mqttPub.emit('device/config', dto)); // publish lên topic ESP32 đang sub
+            console.log('✅ Published to topic device/config');
+            return res.status(200).json({ ok: true });
+        } catch (e: any) {
+            console.error('❌ MQTT publish failed:', e?.message || e);
+            return res.status(502).json({ ok: false, error: String(e?.message || e) });
+        }
     }
 
     @EventPattern('sensor/data')

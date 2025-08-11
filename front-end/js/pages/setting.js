@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function sendToEsp32(payload, token) {
     try {
-        const res = await fetch("https://iot-be-5421.onrender.com/api/mqtt/esp32/config", {
+        const res = await fetch("https://iot-be-5421.onrender.com/api/esp32/config", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -67,6 +67,7 @@ async function sendToEsp32(payload, token) {
             body: JSON.stringify(payload),
         });
         const data = await res.json().catch(() => ({}));
+        console.log("📤 Gửi cấu hình đến ESP32:", data);
         return { ok: res.ok, data };
     } catch (e) {
         return { ok: false, error: e?.message || String(e) };

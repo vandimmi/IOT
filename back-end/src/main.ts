@@ -20,7 +20,6 @@ async function bootstrap() {
     },
   });
 
-
   app.setGlobalPrefix('api', { exclude: [''] });
 
   app.enableCors({

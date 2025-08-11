@@ -35,7 +35,10 @@ export class MqttService {
     @Post('esp32/config')
     async sendEspConfig(@Body() dto: EspConfigDto) {
         const topic = 'device/config'; // ESP32 đang subscribe topic này
+        console.log('HTTP /esp32/config payload =', dto);
         await lastValueFrom(this.mqttPub.emit(topic, dto));
+        console.log('📤 MQTT Sent to topic:', topic, 'with data:', dto);
+        console.log('✅ Published to device/config');
         return { ok: true, topic, sent: dto };
     }
 

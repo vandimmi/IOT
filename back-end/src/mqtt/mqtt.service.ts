@@ -13,17 +13,17 @@ export class MqttService {
     @EventPattern('sensor/data')
     async handleMessage(@Payload() data: any, @Ctx() context: MqttContext) {
         console.log('📩 MQTT Received:', data);
-
+        const payload = typeof data === 'string' ? JSON.parse(data) : data;
         try {
             // Chuyển đổi và xác thực dữ liệu nhận được
             const parsedData = {
-                mq2: Number(data.mq2),
-                mq7: Number(data.mq7),
-                mq135: Number(data.mq135),
-                temperature: Number(data.temperature),
-                flame: Boolean(data.flame),
-                wifissid: String(data.wifissid || ''), // Thêm trường wifissid
-                wifipass: String(data.wifipass || ''), // Thêm trường
+                mq2: Number(payload.mq2),
+                mq7: Number(payload.mq7),
+                mq135: Number(payload.mq135),
+                temperature: Number(payload.temperature),
+                flame: Boolean(payload.flame),
+                wifissid: String(payload.wifissid || ''), // Thêm trường wifissid
+                wifipass: String(payload.wifipass || ''), // Thêm trường
             };
 
             // Gọi service lưu vào MongoDB

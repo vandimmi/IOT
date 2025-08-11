@@ -42,7 +42,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const mqttRes = await sendToEsp32(payloadToEsp32, token);
              if (mqttRes.ok) {
-                alert("Cài đặt đã lưu và gửi về thiết bị!");
+                console.log("✅ Đã gửi cấu hình đến ESP32:", mqttRes.data);
+                alert("Cấu hình đã gửi thành công đến thiết bị!");
             } else {
                 // Không fail toàn bộ nếu publish lỗi — thông báo để bạn biết
                 alert("Đã lưu cài đặt, nhưng gửi về thiết bị không thành công.");

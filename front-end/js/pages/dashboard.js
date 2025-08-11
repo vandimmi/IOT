@@ -1,5 +1,5 @@
 console.log("✅ Dashboard loaded at " + new Date().toLocaleString());
-const apiUrl = 'https://iot-be-5421.onrender.com/api/in4-arduino/latest?limit=100000';
+//const apiUrl = 'https://iot-be-5421.onrender.com/api/in4-arduino/latest?limit=100000';
 const token = localStorage.getItem('token');
 
 let thresholds = {}

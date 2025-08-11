@@ -23,6 +23,12 @@ export class in4_arduino {
 
     @Prop({ default: 'example@gmail.com' })
     email: string;
+
+    @Prop()
+    wifissid: string;
+
+    @Prop()
+    wifipass: string;
 }
 
 export const in4_arduinoSchema = SchemaFactory.createForClass(in4_arduino);

@@ -35,13 +35,6 @@ export class User {
 
   @Prop()
   codeExpire: Date;
-
-  @Prop()
-  wifiSSID: string;
-
-  @Prop()
-  wifiPassword: string;
-
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

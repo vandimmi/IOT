@@ -16,6 +16,12 @@ export class Setting {
 
   @Prop({ required: true })
   temp: number;
+
+  @Prop()
+  wifiSSID: string;
+
+  @Prop()
+  wifiPassword: string;
 }
 
 export const SettingSchema = SchemaFactory.createForClass(Setting);

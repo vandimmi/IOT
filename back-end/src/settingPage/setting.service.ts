@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Query } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Setting, SettingDocument } from './schema/setting.schema';
@@ -8,7 +8,7 @@ import { Setting, SettingDocument } from './schema/setting.schema';
 export class SettingService {
   constructor(@InjectModel(Setting.name) private settingModel: Model<SettingDocument>) {}
 
-  async getThresholds(): Promise<Setting[]> {
+  async getThresholds(@Query('limit') limit: number): Promise<Setting[]> {
     console.log('[SettingService] Fetching thresholds');
     if (await this.settingModel.countDocuments() === 0) {
       // If no settings exist, create default settings
@@ -17,10 +17,18 @@ export class SettingService {
         MQ7: 1000,
         MQ135: 300,
         temp: 50,
+        wifiSSID: '',
+        wifiPassword: '',
       };
       await this.settingModel.create(defaultSettings);
     }
-    return this.settingModel.find().exec();
+    return this.settingModel.find().limit(limit).exec();
+  }
+
+  async createThresholds(body: any): Promise<void> {
+    console.log('[SettingService] Creating thresholds with data:', body);
+    const newSettings = new this.settingModel(body);
+    await newSettings.save();
   }
 
   async updateThresholds(body: any): Promise<void> {

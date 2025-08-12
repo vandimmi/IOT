@@ -9,7 +9,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
-  const PORT = configService.get('PORT');
+  const PORT = configService.get('PORT'); // Default port if use local
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.MQTT,
     options: {
@@ -19,7 +19,6 @@ async function bootstrap() {
       //clientId: 'nestjs-backend-' + uuidv4(),
     },
   });
-
 
   app.setGlobalPrefix('api', { exclude: [''] });
 

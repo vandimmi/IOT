@@ -97,9 +97,18 @@ function updateCards(latest) {
                         },
                         thresholds: thresholds
                     })
-                }).then(res => res.json())
-                    .then(data => console.log("📧 Email sent:", data))
-                    .catch(err => console.error("❌ Error sending email:", err));
+                }).then(async res => {
+                    const result = await res.json();
+                    if (!res.ok) {
+                        console.error("❌ API báo lỗi:", result);
+                    } else {
+                        console.log("📧 Email sent:", result);
+                        lastFireAlertSentTime = now; // chỉ set khi gửi thành công
+                    }
+                })
+                    .catch(err => {
+                        console.error("❌ Lỗi khi gửi email:", err);
+                    });
             }
         }
 

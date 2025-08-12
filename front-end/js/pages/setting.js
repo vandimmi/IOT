@@ -92,10 +92,10 @@ async function loadThresholds() {
         const data = await res.json();
         const settings = data[0];
         // GÁN DỮ LIỆU VÀO CÁC INPUT
-        document.getElementById("MQ2").value = (settings.MQ2).toFixed(1) || "70";
-        document.getElementById("MQ7").value = (settings.MQ7).toFixed(1) || "70";
-        document.getElementById("MQ135").value = (settings.MQ135).toFixed(1) || "70";
-        document.getElementById("temp").value = settings.temp || "50";
+        document.getElementById("MQ2").value = (typeof settings?.MQ2 === 'number' ? settings.MQ2.toFixed(1) : "70");
+        document.getElementById("MQ7").value = (typeof settings?.MQ7 === 'number' ? settings.MQ7.toFixed(1) : "70");
+        document.getElementById("MQ135").value = (typeof settings?.MQ135 === 'number' ? settings.MQ135.toFixed(1) : "70");
+        document.getElementById("temp").value = (typeof settings?.temp === 'number' ? settings.temp.toFixed(1) : "50");
     } catch (err) {
         console.error("Lỗi khi tải setting:", err.message);
         alert("Không thể tải cài đặt hiện tại từ server.");

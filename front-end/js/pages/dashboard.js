@@ -5,7 +5,7 @@ const token = localStorage.getItem('token');
 document.getElementById("alarm-button").addEventListener("click", async () => {
     try {
         const payload = { alarm: "on" }; // payload gửi tới ESP32 qua server
-        const res = await fetch("https://iot-be-5421.onrender.com/api/device/config", {
+        const res = await fetch("https://iot-be-5421.onrender.com/api/esp32/config", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

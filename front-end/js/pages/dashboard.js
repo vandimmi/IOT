@@ -61,7 +61,11 @@ function updateCards(latest) {
     document.getElementById('value-mq135').innerText = latest.mq135 != null ? (latest.mq135 / 4095 * 100).toFixed(1) + '%' : "--";
     document.getElementById('value-temp').innerText = latest.temperature + '°C';
 
-    const isNormal = latest.flame !== 0 && latest.temperature < 60 && latest.mq2 < 600;
+    const isNormal = latest.flame !== 0
+        && latest.temperature < (thresholds.temp)
+        && latest.mq2 < (thresholds.MQ2)
+        && latest.mq7 < (thresholds.MQ7)
+        && latest.mq135 < (thresholds.MQ135);
     document.getElementById('value-status').innerText = isNormal ? 'Ổn định' : 'Cảnh báo';
 }
 

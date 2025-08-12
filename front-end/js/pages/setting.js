@@ -93,7 +93,7 @@ async function loadThresholds() {
         document.getElementById("MQ2").value = (settings.MQ2/4095*100).toFixed(1)  || "70";
         document.getElementById("MQ7").value = (settings.MQ7/4095*100).toFixed(1) || "70";
         document.getElementById("MQ135").value = (settings.MQ135/4095*100).toFixed(1) || "70";
-        document.getElementById("temp").value = settings.temp/4095*100|| "50";
+        document.getElementById("temp").value = settings.temp|| "50";
     } catch (err) {
         console.error("Lỗi khi tải setting:", err.message);
         alert("Không thể tải cài đặt hiện tại từ server.");

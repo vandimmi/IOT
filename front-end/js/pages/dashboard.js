@@ -70,7 +70,7 @@ function updateCards(latest) {
         && latest.mq7 < (thresholds.MQ7)
         && latest.mq135 < (thresholds.MQ135);
     document.getElementById('value-status').innerText = isNormal ? 'Ổn định' : 'Cảnh báo';
-    if (!isNormal) {
+    if (isNormal === 'Cảnh báo') {
         // Gửi email cảnh báo
         const now = Date.now();
         const email = localStorage.getItem('email');

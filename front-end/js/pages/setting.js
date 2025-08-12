@@ -13,10 +13,11 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         const token = localStorage.getItem("token");
+        const email = localStorage.getItem("email");
 
         try {
             // const res = await fetch("https://iot-be-5421.onrender.com/api/settings", {
-            const res = await fetch("https://iot-be-5421.onrender.com/api/settings/create", {
+            const res = await fetch(`https://iot-be-5421.onrender.com/api/settings/${email}/create`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

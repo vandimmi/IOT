@@ -79,7 +79,7 @@ async function loadThresholds() {
 
     try {
         // const res = await fetch("https://iot-be-5421.onrender.com/api/settings", {
-        const res = await fetch("https://iot-be-5421.onrender.com/api/settings/get?limit=1", {
+        const res = await fetch(`https://iot-be-5421.onrender.com/api/settings/${email}/get?limit=1`, {
             headers: {
                 "Authorization": `Bearer ${token}`
             }

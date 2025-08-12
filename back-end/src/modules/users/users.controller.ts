@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Put } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -58,6 +58,12 @@ export class UsersController {
   }) {
     const { email, sensorData, thresholds } = body;
     return this.usersService.sendFireAlertEmail(email, sensorData, thresholds);
+  }
+
+  @Put('update')
+  async updateUser(@Body() body: UpdateUserDto) {
+    console.log('[PUT /users/update] Dữ liệu nhận từ frontend:', body);
+    return this.usersService.update(body);
   }
 
   @Delete(':id')

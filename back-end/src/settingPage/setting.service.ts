@@ -8,30 +8,41 @@ import { Setting, SettingDocument } from './schema/setting.schema';
 export class SettingService {
   constructor(@InjectModel(Setting.name) private settingModel: Model<SettingDocument>) {}
 
-  async getThresholds(@Query('limit') limit: number): Promise<Setting[]> {
-    console.log('[SettingService] Fetching thresholds');
-    if (await this.settingModel.countDocuments() === 0) {
-      // If no settings exist, create default settings
-      const defaultSettings: Setting = {
-        MQ2: 500,
-        MQ7: 1000,
-        MQ135: 300,
-        temp: 50,
-        wifiSSID: '',
-        wifiPassword: '',
-      };
-      await this.settingModel.create(defaultSettings);
-    }
-    return await this.settingModel.find().sort({ creatAt : -1}).limit(limit).exec();
-  }
+  async getThresholds(
+    @Query('limit') limit: number = 1, 
+    @Query('email') email: string
+): Promise<Setting[]> {
+    console.log('[SettingService] Fetching thresholds for', email);
 
-  async createThresholds(body: any): Promise<void> {
+    if (await this.settingModel.countDocuments({ email }) === 0) {
+        // Nếu email này chưa có cài đặt thì tạo mặc định
+        const defaultSettings: Setting = {
+            MQ2: 500,
+            MQ7: 1000,
+            MQ135: 300,
+            temp: 50,
+            wifiSSID: '',
+            wifiPassword: '',
+            email: email,
+        };
+        await this.settingModel.create(defaultSettings);
+    }
+
+    return await this.settingModel
+        .find({ email })
+        .sort({ createdAt: -1 })
+        .limit(limit)
+        .exec();
+}
+
+
+  async createThresholds(body: any, email: string): Promise<void> {
     console.log('[SettingService] Creating thresholds with data:', body);
-    const newSettings = new this.settingModel(body);
+    const newSettings = new this.settingModel({ ...body, email });
     await newSettings.save();
   }
 
-  async updateThresholds(body: any): Promise<void> {
+  async updateThresholds(body: any, email: string): Promise<void> {
     console.log('[SettingService] Updating thresholds with data:', body);
     await this.settingModel.updateOne({}, body, { upsert: true }).exec();
   }

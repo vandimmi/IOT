@@ -17,6 +17,9 @@ export class Setting {
   @Prop({ required: true })
   temp: number;
 
+  @Prop({default: ''})
+  email: string;
+
   @Prop()
   wifiSSID: string;
 

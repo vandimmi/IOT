@@ -22,7 +22,7 @@ export class SettingService {
       };
       await this.settingModel.create(defaultSettings);
     }
-    return this.settingModel.find().limit(limit).exec();
+    return await this.settingModel.find().sort({ _id: -1 }).limit(limit).exec();
   }
 
   async createThresholds(body: any): Promise<void> {

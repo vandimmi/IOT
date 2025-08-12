@@ -92,7 +92,7 @@ async function loadThresholds() {
         const data = await res.json();
         const settings = data[0];
         // GÁN DỮ LIỆU VÀO CÁC INPUT
-        document.getElementById("MQ2").value = (settings.MQ20).toFixed(1) || "70";
+        document.getElementById("MQ2").value = (settings.MQ2).toFixed(1) || "70";
         document.getElementById("MQ7").value = (settings.MQ7).toFixed(1) || "70";
         document.getElementById("MQ135").value = (settings.MQ135).toFixed(1) || "70";
         document.getElementById("temp").value = settings.temp || "50";

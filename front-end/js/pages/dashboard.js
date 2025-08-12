@@ -2,6 +2,26 @@ console.log("✅ Dashboard loaded at " + new Date().toLocaleString());
 //const apiUrl = 'https://iot-be-5421.onrender.com/api/in4-arduino/latest?limit=100000';
 const token = localStorage.getItem('token');
 
+document.getElementById("alarm-button").addEventListener("click", async () => {
+    try {
+        const payload = { alarm: "on" }; // payload gửi tới ESP32 qua server
+        const res = await fetch("https://iot-be-5421.onrender.com/api/device/config", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+        });
+
+        const data = await res.json();
+        console.log("✅ Đã gửi còi báo động:", data);
+        alert("Đã kích hoạt còi báo động!");
+    } catch (err) {
+        console.error("❌ Lỗi gửi còi báo động:", err);
+    }
+});
+
+
 let thresholds = {}
 
 async function fetchThresholds() {

@@ -76,9 +76,8 @@ function updateCards(latest) {
         const email = localStorage.getItem('email');
         const token = localStorage.getItem('token');
         if (email && token) { // 10 phút
-            alert("⚠️ Cảnh báo: Phát hiện bất thường trong dữ liệu cảm biến!");
-            if (now - lastFireAlertSentTime < 10 * 60 * 1000) {
-                alert("Bạn đã nhận cảnh báo trong 10 phút qua. Vui lòng kiểm tra email.");
+            if (now - lastFireAlertSentTime > 10 * 60 * 1000) {
+                alert("Bạn chưa nhận cảnh báo trong 10 phút qua. Gửi email mới...");
                 lastFireAlertSentTime = now;
                 fetch("https://iot-be-5421.onrender.com/api/users/fired", {
                     method: "POST",

@@ -173,7 +173,7 @@ export class UsersService {
       subject: '🔥 FireGuard - Cảnh báo cháy',
       template: 'fired', // tên template file fire-alert.hbs (hoặc .html nếu bạn config đúng)
       context: {
-        name,
+        email,
         mq2: sensorData.mq2,
         mq7: sensorData.mq7,
         mq135: sensorData.mq135,

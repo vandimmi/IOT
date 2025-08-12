@@ -53,7 +53,8 @@ async function fetchThresholds() {
 async function fetchAndUpdate() {
     await fetchThresholds(); // Đảm bảo ngưỡng được cập nhật trước
     const token = localStorage.getItem('token');
-    const apiUrl = 'https://iot-be-5421.onrender.com/api/in4-arduino/latest?limit=100';
+    const email = localStorage.getItem('email');
+    const apiUrl = `https://iot-be-5421.onrender.com/api/in4-arduino/${email}/latest?limit=100`;
 
     try {
         const res = await fetch(apiUrl, {

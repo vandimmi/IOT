@@ -3,7 +3,7 @@ import { HydratedDocument } from 'mongoose';
 
 export type SettingDocument = HydratedDocument<Setting>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Setting {
   @Prop({ required: true })
   MQ2: number;
@@ -16,6 +16,9 @@ export class Setting {
 
   @Prop({ required: true })
   temp: number;
+
+  @Prop({ default: 'example@gmail.com' })
+  email: string;
 
   @Prop()
   wifiSSID: string;

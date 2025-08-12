@@ -5,6 +5,8 @@ import { In4ArduinoService } from '../modules/in4_arduino/in4_arduino.service';
 import { SettingService } from '../settingPage/setting.service';
 import { ConfigService } from '@nestjs/config/dist/config.service';
 import { lastValueFrom } from 'rxjs';
+import { UsersService } from '../modules/users/users.service';
+import { emit } from 'process';
 
 class EspConfigDto {
     ssid?: string;
@@ -22,6 +24,7 @@ export class MqttService {
         private readonly in4ArduinoService: In4ArduinoService,
         private readonly settingService: SettingService,
         private readonly configService: ConfigService,
+        private readonly usersService: UsersService,
     ) {
         this.mqttPub = ClientProxyFactory.create({
             transport: Transport.MQTT,
@@ -62,11 +65,15 @@ export class MqttService {
                 flame: Boolean(payload.flame),
                 wifissid: String(payload.wifissid || ''), // Thêm trường wifissid
                 wifipass: String(payload.wifipass || ''), // Thêm trường
+                email : String(payload.email || ''), // Thêm trường email
             };
 
             // Gọi service lưu vào MongoDB
             await this.in4ArduinoService.save(parsedData);
             console.log('✅ Dữ liệu đã lưu MongoDB');
+
+            // Gửi dữ liệu đến Telegram bot
+
         } catch (err) {
             console.error('❌ Lỗi khi lưu dữ liệu:', err);
         }

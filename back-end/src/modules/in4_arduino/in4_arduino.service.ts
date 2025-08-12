@@ -40,7 +40,10 @@ export class In4ArduinoService {
     if (email) {
       query.email = email;
     }
-    return this.in4ArduinoModel.find(query).sort({ createdAt: -1 }).limit(limit);
+    return await this.in4ArduinoModel.find(query)
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .exec();
   }
 
 

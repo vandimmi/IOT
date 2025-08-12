@@ -32,8 +32,8 @@ export class In4ArduinoController {
 
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('latest') 
-  async getLatest(@Query('limit') limit: number = 100000, @Query('email') email?: string) {
+  @Get(':email/latest') 
+  async getLatest(@Query('limit') limit: number = 100000, @Param('email') email: string) {
     return this.in4ArduinoService.findLatest(limit, email);
   }
 

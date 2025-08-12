@@ -10,39 +10,49 @@ const response_patterns = [
 	{
     "response_type": "greeting",
     "user_input": ["hello", "hi", "hey"],
-    "bot_response": "Hey there!",
+    "bot_response": "<p>Hey there!</p>",
     "required_words": []
   },
   {
     "response_type": "greeting",
     "user_input": ["see you", "goodbye", "bye"],
-    "bot_response": "See you later!",
+    "bot_response": "<p>See you later!</p>",
     "required_words": []
   },
   {
     "response_type": "greeting",
     "user_input": ["nice", "to", "meet", "you"],
-    "bot_response": "The pleasure is all mine!",
+    "bot_response": "<p>The pleasure is all mine!</p>",
     "required_words": ["nice", "meet", "you"]
-  },
-  {
-    "response_type": "question",
-    "user_input": ["how", "to", "learn", "code", "coding", "apps"],
-    "bot_response": "Start by typing: 'How to learn coding' on Google.",
-    "required_words": ["learn", "code"]
-  },
-  {
-    "response_type": "question",
-    "user_input": ["refund", "how", "can", "I", "get"],
-    "bot_response": "We don't offer refunds for free education.",
-    "required_words": ["refund", "i"]
   },
   {
     "response_type": "question",
     "user_input": ["how", "are", "you"],
     "bot_response": "I'm great! Thanks for asking.",
     "required_words": ["how", "are", "you"]
-  }
+  },
+  {
+    "response_type": "help",
+    "user_input": ["/help"],
+    "bot_response": `
+    <p>You can type:</p>
+    <p>"setting" to edit your settings</p>
+    <p>"profile" to edit your profile</p>
+    `,
+    "required_words": ["/help"]
+  },
+  {
+    "response_type": "hyperlink",
+    "user_input": ["show", "setting"],
+    "bot_response": "<p>Come with me! <a href='http://localhost:5500/front-end/pages/setting.html'>Here</a>.</p>",
+    "required_words": ["setting"]
+  },
+  {
+    "response_type": "hyperlink",
+    "user_input": ["profile"],
+    "bot_response": `<p>Come with me! <a href='http://localhost:5500/front-end/pages/profile.html'>Here</a>.</p>`,
+    "required_words": ["profile"]
+  },
 ]
 
 function blindResponse() {
@@ -51,7 +61,7 @@ function blindResponse() {
 }
 
 export function generateResponse(input: string) {
-	const words = input.toLowerCase().split(/\s+|[,;?!.-]\s*/);
+	const words = input.toLocaleLowerCase('vi').split(/\s+|[,;?!.-]\s*/);
 
 	let response_rank: number[] = [];
 

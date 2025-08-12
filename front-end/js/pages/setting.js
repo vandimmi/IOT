@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const token = localStorage.getItem("token");
 
         try {
-            // const res = await fetch("http://localhost:8080/api/settings", {
+            // const res = await fetch("https://iot-be-5421.onrender.com/api/settings", {
             const res = await fetch("https://iot-be-5421.onrender.com/api/settings/create", {
                 method: "POST",
                 headers: {
@@ -78,7 +78,7 @@ async function loadThresholds() {
     const token = localStorage.getItem("token");
 
     try {
-        // const res = await fetch("http://localhost:8080/api/settings", {
+        // const res = await fetch("https://iot-be-5421.onrender.com/api/settings", {
         const res = await fetch("https://iot-be-5421.onrender.com/api/settings/get?limit=1", {
             headers: {
                 "Authorization": `Bearer ${token}`

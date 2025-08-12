@@ -31,9 +31,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 alert("Lưu thất bại");
             }
             const payloadToEsp32 = {
-                mq2: thresholds.MQ2,
-                mq7: thresholds.MQ7,
-                mq135: thresholds.MQ135,
+                mq2: thresholds.MQ2*4095/100,
+                mq7: thresholds.MQ7*4095/100,
+                mq135: thresholds.MQ135*4095/100,
                 temp: thresholds.temp,
                 // chỉ gửi ssid/pass nếu có (tránh đổi Wi-Fi ngoài ý muốn)
                 ...(thresholds.wifissid ? { ssid: thresholds.wifissid } : {}),
@@ -90,9 +90,9 @@ async function loadThresholds() {
         const data = await res.json();
         const settings = data[0];
         // GÁN DỮ LIỆU VÀO CÁC INPUT
-        document.getElementById("MQ2").value = settings.MQ2 || 1000;
-        document.getElementById("MQ7").value = settings.MQ7 || 1000;
-        document.getElementById("MQ135").value = settings.MQ135 || 300;
+        document.getElementById("MQ2").value = settings.MQ2/4095*100 || 1000;
+        document.getElementById("MQ7").value = settings.MQ7/4095*100 || 1000;
+        document.getElementById("MQ135").value = settings.MQ135/4095*100 || 300;
         document.getElementById("temp").value = settings.temp || 50;
     } catch (err) {
         console.error("Lỗi khi tải setting:", err.message);

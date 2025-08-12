@@ -84,6 +84,7 @@ button {
 
 button:hover {
     background: #ea4e2a;
+    color: #333;
 }
 
 .back-button {

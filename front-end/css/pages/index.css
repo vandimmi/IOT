@@ -107,7 +107,9 @@ section {
   overflow: hidden;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
 }
 
 .hero-background img {
@@ -123,7 +125,6 @@ section {
 .hero-img {
   width: 100%;
   height: auto;
-  padding-right: 190px;
 }
 
 .hero-text {

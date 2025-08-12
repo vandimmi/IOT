@@ -39,6 +39,27 @@ export class UsersController {
   return user;
   }
 
+  @Post('fired')
+  async sendFireAlertEmail(@Body() body: {
+    email: string;
+    sensorData: {
+      mq2: number;
+      mq7: number;
+      mq135: number;
+      temperature: number;
+      flame: number;
+    };
+    thresholds: {
+      MQ2: number;
+      MQ7: number;
+      MQ135: number;
+      temp: number;
+    };
+  }) {
+    const { email, sensorData, thresholds } = body;
+    return this.usersService.sendFireAlertEmail(email, sensorData, thresholds);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);

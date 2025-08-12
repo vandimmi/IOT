@@ -145,6 +145,56 @@ export class UsersService {
     }
   }
 
+  async sendFireAlertEmail(
+  email: string,
+  sensorData: {
+    mq2: number;
+    mq7: number;
+    mq135: number;
+    temperature: number;
+    flame: number;
+  },
+  thresholds: {
+    MQ2: number;
+    MQ7: number;
+    MQ135: number;
+    temp: number;
+  }
+) {
+  try {
+    const flameAlert = sensorData.flame === 0; // flame=0 => có lửa
+    const tempAlert = sensorData.temperature > thresholds.temp;
+    const mq2Alert = sensorData.mq2 > thresholds.MQ2;
+    const mq7Alert = sensorData.mq7 > thresholds.MQ7;
+    const mq135Alert = sensorData.mq135 > thresholds.MQ135;
+
+    await this.mailerService.sendMail({
+      to: email,
+      subject: '🔥 FireGuard - Cảnh báo cháy',
+      template: 'fired', // tên template file fire-alert.hbs (hoặc .html nếu bạn config đúng)
+      context: {
+        name,
+        mq2: sensorData.mq2,
+        mq7: sensorData.mq7,
+        mq135: sensorData.mq135,
+        temp: sensorData.temperature,
+        fired: flameAlert ? 'Có' : 'Không',
+        thresholds,
+        flameAlert,
+        tempAlert,
+        mq2Alert,
+        mq7Alert,
+        mq135Alert,
+      },
+    });
+    return { success: true };
+  } catch (error) {
+    console.error('Lỗi gửi email cảnh báo cháy:', error);
+    throw error;
+  }
+}
+
+
   async notifyUser(email: string, content: string) {
     const user = await this.userModel.findOne({ email });
     if (!user || !user.chat_id) {

@@ -52,6 +52,9 @@ async function fetchAndUpdate() {
         console.error("❌ Fetch error:", e);
     }
 }
+
+let lastFireAlertSentTime = 0;
+
 function updateCards(latest) {
     if (!latest) return;
     console.log("🔄 Cập nhật card với:", latest);
@@ -67,6 +70,39 @@ function updateCards(latest) {
         && latest.mq7 < (thresholds.MQ7)
         && latest.mq135 < (thresholds.MQ135);
     document.getElementById('value-status').innerText = isNormal ? 'Ổn định' : 'Cảnh báo';
+    if (!isNormal) {
+        // Gửi email cảnh báo
+        const now = Date.now();
+        const email = localStorage.getItem('email');
+        const token = localStorage.getItem('token');
+        if (email && token) { // 10 phút
+            if (now - lastFireAlertSentTime < 10 * 60 * 1000) {
+                lastFireAlertSentTime = now;
+                fetch("https://iot-be-5421.onrender.com/api/users/fired", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        name: localStorage.getItem('name') || 'User',
+                        sensorData: {
+                            mq2: latest.mq2,
+                            mq7: latest.mq7,
+                            mq135: latest.mq135,
+                            temperature: latest.temperature,
+                            flame: latest.flame,
+                        },
+                        thresholds: thresholds
+                    })
+                }).then(res => res.json())
+                    .then(data => console.log("📧 Email sent:", data))
+                    .catch(err => console.error("❌ Error sending email:", err));
+            }
+        }
+
+    }
 }
 
 

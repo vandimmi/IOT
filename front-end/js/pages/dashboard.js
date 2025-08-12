@@ -70,8 +70,9 @@ function updateCards(latest) {
         && latest.mq7 < (thresholds.MQ7)
         && latest.mq135 < (thresholds.MQ135);
     document.getElementById('value-status').innerText = isNormal ? 'Ổn định' : 'Cảnh báo';
-    if (isNormal === 'Cảnh báo') {
+    if (!isNormal) {
         // Gửi email cảnh báo
+        alert("⚠️ Cảnh báo: Phát hiện bất thường trong dữ liệu cảm biến!");
         const now = Date.now();
         const email = localStorage.getItem('email');
         const token = localStorage.getItem('token');

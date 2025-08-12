@@ -9,7 +9,7 @@ document.getElementById("alarm-button").addEventListener("click", async () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                ...chart(token ? { Authorization: `Bearer ${token}` } : {})
+                ...(token ? { Authorization: `Bearer ${token}` } : {})
             },
             body: JSON.stringify(payload),
         });

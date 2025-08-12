@@ -1,3 +1,6 @@
+const token = localStorage.getItem("token");
+const email = localStorage.getItem("email");
+
 document.addEventListener("DOMContentLoaded", () => {
     // GỌI LOAD DỮ LIỆU Ở ĐÂY
     loadThresholds();
@@ -12,8 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
             wifipass: '' // Thêm trường này nếu cần
         };
 
-        const token = localStorage.getItem("token");
-        const email = localStorage.getItem("email");
 
         try {
             // const res = await fetch("https://iot-be-5421.onrender.com/api/settings", {
@@ -32,9 +33,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 alert("Lưu thất bại");
             }
             const payloadToEsp32 = {
-                mq2: thresholds.MQ2*4095/100,
-                mq7: thresholds.MQ7*4095/100,
-                mq135: thresholds.MQ135*4095/100,
+                mq2: thresholds.MQ2 * 4095 / 100,
+                mq7: thresholds.MQ7 * 4095 / 100,
+                mq135: thresholds.MQ135 * 4095 / 100,
                 temp: thresholds.temp,
                 // chỉ gửi ssid/pass nếu có (tránh đổi Wi-Fi ngoài ý muốn)
                 ...(thresholds.wifissid ? { ssid: thresholds.wifissid } : {}),
@@ -42,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
             const mqttRes = await sendToEsp32(payloadToEsp32, token);
-             if (mqttRes.ok) {
+            if (mqttRes.ok) {
                 console.log("✅ Đã gửi cấu hình đến ESP32:", mqttRes.data);
                 alert("Cấu hình đã gửi thành công đến thiết bị!");
             } else {
@@ -91,10 +92,10 @@ async function loadThresholds() {
         const data = await res.json();
         const settings = data[0];
         // GÁN DỮ LIỆU VÀO CÁC INPUT
-        document.getElementById("MQ2").value = (settings.MQ2/4095*100).toFixed(1)  || "70";
-        document.getElementById("MQ7").value = (settings.MQ7/4095*100).toFixed(1) || "70";
-        document.getElementById("MQ135").value = (settings.MQ135/4095*100).toFixed(1) || "70";
-        document.getElementById("temp").value = settings.temp|| "50";
+        document.getElementById("MQ2").value = (settings.MQ2 / 4095 * 100).toFixed(1) || "70";
+        document.getElementById("MQ7").value = (settings.MQ7 / 4095 * 100).toFixed(1) || "70";
+        document.getElementById("MQ135").value = (settings.MQ135 / 4095 * 100).toFixed(1) || "70";
+        document.getElementById("temp").value = settings.temp || "50";
     } catch (err) {
         console.error("Lỗi khi tải setting:", err.message);
         alert("Không thể tải cài đặt hiện tại từ server.");

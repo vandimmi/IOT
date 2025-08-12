@@ -36,7 +36,7 @@ async function bootstrap() {
     console.log('✅ MQTT microservice is running');
   });
   await app.listen(process.env.PORT ?? 8080);
-  // await bot.start();
-  // console.log("✅ Telegram bot started");
+  await bot.start();
+  console.log("✅ Telegram bot started");
 }
 bootstrap();

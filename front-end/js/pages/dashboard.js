@@ -72,12 +72,13 @@ function updateCards(latest) {
     document.getElementById('value-status').innerText = isNormal ? 'Ổn định' : 'Cảnh báo';
     if (!isNormal) {
         // Gửi email cảnh báo
-        alert("⚠️ Cảnh báo: Phát hiện bất thường trong dữ liệu cảm biến!");
         const now = Date.now();
         const email = localStorage.getItem('email');
         const token = localStorage.getItem('token');
         if (email && token) { // 10 phút
+            alert("⚠️ Cảnh báo: Phát hiện bất thường trong dữ liệu cảm biến!");
             if (now - lastFireAlertSentTime < 10 * 60 * 1000) {
+                alert("Bạn đã nhận cảnh báo trong 10 phút qua. Vui lòng kiểm tra email.");
                 lastFireAlertSentTime = now;
                 fetch("https://iot-be-5421.onrender.com/api/users/fired", {
                     method: "POST",

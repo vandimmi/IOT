@@ -7,7 +7,7 @@ export class SettingController {
   constructor(private readonly settingService: SettingService) {}
 
   @Get(':email/get')
-  getSettings(@Param('email') email: string, @Query('limit') limit: number = 1) {
+  getSettings(@Param('email') email: string, @Query('limit') limit: number = 100000) {
     console.log('[GET /settings] Trả về ngưỡng cài đặt');
     return this.settingService.getThresholds(limit, email);
   }

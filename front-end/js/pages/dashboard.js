@@ -36,6 +36,7 @@ async function fetchThresholds() {
         });
         if (!res.ok) throw new Error("Không thể lấy dữ liệu ngưỡng");
         const data = await res.json();
+        alert(JSON.stringify(data));
 
         // Nếu API trả về mảng (ví dụ [{ MQ2: 500, ... }]) thì dùng data[0]
         thresholds = {

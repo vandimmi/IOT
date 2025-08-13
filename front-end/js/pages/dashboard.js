@@ -237,6 +237,8 @@ function updateTable(data) {
     const oldRows = table.querySelectorAll("tr:not(:first-child)");
     oldRows.forEach(row => row.remove());
 
+    const thresholds = JSON.parse(localStorage.getItem("thresholds")) || {};
+
     // Cập nhật bảng theo thứ tự thời gian tăng dần
     latestRows.forEach((entry, index) => {
         const tr = document.createElement('tr');

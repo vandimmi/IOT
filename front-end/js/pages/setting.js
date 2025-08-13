@@ -28,9 +28,9 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             if (res.ok) {
-                alert("Cài đặt đã lưu và gửi về thiết bị!");
+                // alert("Cài đặt đã lưu và gửi về thiết bị!");
             } else {
-                alert("Lưu thất bại");
+                // alert("Lưu thất bại");
             }
             const payloadToEsp32 = {
                 mq2: thresholds.MQ2 * 4095 / 100,
@@ -45,13 +45,13 @@ document.addEventListener("DOMContentLoaded", () => {
             const mqttRes = await sendToEsp32(payloadToEsp32, token);
             if (mqttRes.ok) {
                 console.log("✅ Đã gửi cấu hình đến ESP32:", mqttRes.data);
-                alert("Cấu hình đã gửi thành công đến thiết bị!");
+                // alert("Cấu hình đã gửi thành công đến thiết bị!");
             } else {
                 // Không fail toàn bộ nếu publish lỗi — thông báo để bạn biết
-                alert("Đã lưu cài đặt, nhưng gửi về thiết bị không thành công.");
+                // alert("Đã lưu cài đặt, nhưng gửi về thiết bị không thành công.");
             }
         } catch (err) {
-            alert("Có lỗi khi gửi dữ liệu: " + err.message);
+            // alert("Có lỗi khi gửi dữ liệu: " + err.message);
         }
     });
 });
@@ -98,6 +98,6 @@ async function loadThresholds() {
         document.getElementById("temp").value = (typeof settings?.temp === 'number' ? settings.temp.toFixed(1) : "50");
     } catch (err) {
         console.error("Lỗi khi tải setting:", err.message);
-        alert("Không thể tải cài đặt hiện tại từ server.");
+        // alert("Không thể tải cài đặt hiện tại từ server.");
     }
 }

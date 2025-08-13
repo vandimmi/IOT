@@ -16,7 +16,7 @@ document.getElementById("alarm-button").addEventListener("click", async () => {
 
         const data = await res.json();
         console.log("✅ Đã gửi còi báo động:", data);
-        alert("Đã kích hoạt còi báo động!");
+        // alert("Đã kích hoạt còi báo động!");
     } catch (err) {
         console.error("❌ Lỗi gửi còi báo động:", err);
     }
@@ -100,7 +100,7 @@ function updateCards(latest) {
         const token = localStorage.getItem('token');
         if (email && token) { // 10 phút
             if (now - lastFireAlertSentTime > 10 * 60 * 1000) {
-                alert("Bạn chưa nhận cảnh báo trong 10 phút qua. Gửi email mới...");
+                // alert("Bạn chưa nhận cảnh báo trong 10 phút qua. Gửi email mới...");
                 lastFireAlertSentTime = now;
                 fetch("https://iot-be-5421.onrender.com/api/users/fired", {
                     method: "POST",

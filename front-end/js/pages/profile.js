@@ -28,13 +28,13 @@ document.getElementById("save-in4").addEventListener("click", async (e) => {
 
         const result = await res.json();
         if (res.ok) {
-            alert("✅ Profile updated successfully!");
+            // alert("✅ Profile updated successfully!");
         } else {
-            alert("❌ Update failed: " + (result.message || "Unknown error"));
+            // alert("❌ Update failed: " + (result.message || "Unknown error"));
         }
     } catch (err) {
         console.error(err);
-        alert("❌ Error connecting to server.");
+        // alert("❌ Error connecting to server.");
     }
 
     try {
@@ -65,7 +65,7 @@ document.getElementById("save-in4").addEventListener("click", async (e) => {
 
     } catch (err) {
         console.error(err);
-        alert("❌ Error connecting to server for settings.");
+        // alert("❌ Error connecting to server for settings.");
     }
 });
 async function loadUserInfo() {
@@ -97,7 +97,7 @@ async function loadUserInfo() {
 
     } catch (err) {
         console.error(err);
-        alert("❌ Failed to load user data.");
+        // alert("❌ Failed to load user data.");
     }
 }
 
@@ -127,14 +127,14 @@ document.getElementById("profileForm").addEventListener("submit", async (e) => {
         });
 
         const result = await res.json();
-        if (res.ok) {
-            alert("✅ Profile updated successfully!");
-        } else {
-            alert("❌ Update failed: " + (result.message || "Unknown error"));
-        }
+        // if (res.ok) {
+        //     ("✅ Profile updated successfully!");alert
+        // } else {
+        //     alert("❌ Update failed: " + (result.message || "Unknown error"));
+        // }
     } catch (err) {
         console.error(err);
-        alert("❌ Error connecting to server.");
+        // alert("❌ Error connecting to server.");
     }
 
     try {
@@ -148,13 +148,13 @@ document.getElementById("profileForm").addEventListener("submit", async (e) => {
         });
 
         const resultSettings = await resSettings.json();
-        if (resSettings.ok) {
-            alert("✅ Settings updated successfully!");
-        } else {
-            alert("❌ Settings update failed: " + (resultSettings.message || "Unknown error"));
-        }
+        // if (resSettings.ok) {
+        //     alert("✅ Settings updated successfully!");
+        // } else {
+        //     alert("❌ Settings update failed: " + (resultSettings.message || "Unknown error"));
+        // }
     } catch (err) {
         console.error(err);
-        alert("❌ Error connecting to server for settings.");
+        // alert("❌ Error connecting to server for settings.");
     }
 });

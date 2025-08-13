@@ -79,7 +79,7 @@ export class MqttService {
             const alerts: string[] = [];
 
             // Kiểm tra vượt ngưỡng
-            if (parsedData.flame) alerts.push("🔥 Phát hiện có lửa");
+            if (!parsedData.flame) alerts.push("🔥 Phát hiện có lửa");
             if (parsedData.temperature > t.temp) alerts.push(`🌡 Nhiệt độ cao (> ${t.temp})`);
             if (parsedData.mq2*100/4095 > t.MQ2) alerts.push(`💨 MQ2 vượt ngưỡng (> ${t.MQ2})`);
             if (parsedData.mq7*100/4095 > t.MQ7) alerts.push(`💨 MQ7 vượt ngưỡng (> ${t.MQ7})`);

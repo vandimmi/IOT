@@ -45,6 +45,8 @@ async function fetchThresholds() {
             temp: data[0]?.temp || 60
         };
 
+        localStorage.setItem("thresholds", JSON.stringify(thresholds));
+
         console.log("📥 Ngưỡng lấy từ server:", thresholds);
     } catch (err) {
         console.error("❌ Lỗi khi lấy ngưỡng:", err.message);

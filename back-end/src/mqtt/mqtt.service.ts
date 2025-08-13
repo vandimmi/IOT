@@ -81,17 +81,17 @@ export class MqttService {
             // Kiểm tra vượt ngưỡng
             if (parsedData.flame) alerts.push("🔥 Phát hiện có lửa");
             if (parsedData.temperature > t.temp) alerts.push(`🌡 Nhiệt độ cao (> ${t.temp})`);
-            if (parsedData.mq2 > t.MQ2) alerts.push(`💨 MQ2 vượt ngưỡng (> ${t.MQ2})`);
-            if (parsedData.mq7 > t.MQ7) alerts.push(`💨 MQ7 vượt ngưỡng (> ${t.MQ7})`);
-            if (parsedData.mq135 > t.MQ135) alerts.push(`💨 MQ135 vượt ngưỡng (> ${t.MQ135})`);
+            if (parsedData.mq2*100/4095 > t.MQ2) alerts.push(`💨 MQ2 vượt ngưỡng (> ${t.MQ2})`);
+            if (parsedData.mq7*100/4095 > t.MQ7) alerts.push(`💨 MQ7 vượt ngưỡng (> ${t.MQ7})`);
+            if (parsedData.mq135*100/4095 > t.MQ135) alerts.push(`💨 MQ135 vượt ngưỡng (> ${t.MQ135})`);
 
             // Chỉ gửi nếu có cháy hoặc vượt ngưỡng
             if (alerts.length > 0) {
                 const message =
                     `🚨 Cảnh báo cảm biến:\n` +
-                    `MQ2: ${parsedData.mq2}\n` +
-                    `MQ7: ${parsedData.mq7}\n` +
-                    `MQ135: ${parsedData.mq135}\n` +
+                    `MQ2: ${parsedData.mq2*100/4095}+ %\n` +
+                    `MQ7: ${parsedData.mq7*100/4095}+ %\n` +
+                    `MQ135: ${parsedData.mq135*100/4095}+ %\n` +
                     `Nhiệt độ: ${parsedData.temperature}\n` +
                     `Lửa: ${parsedData.flame ? 'Có' : 'Không'}\n\n` +
                     `⚠ Tình trạng: ${alerts.join(', ')}`;

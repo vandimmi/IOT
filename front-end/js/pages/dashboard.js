@@ -28,7 +28,8 @@ let thresholds = {}
 async function fetchThresholds() {
     try {
         const token = localStorage.getItem("token");
-        const res = await fetch("https://iot-be-5421.onrender.com/api/settings/get", {
+        const email = localStorage.getItem("email");
+        const res = await fetch(`https://iot-be-5421.onrender.com/api/settings/${email}/get`, {
             headers: {
                 "Authorization": `Bearer ${token}`
             }

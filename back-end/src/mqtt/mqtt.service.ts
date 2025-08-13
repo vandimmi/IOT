@@ -89,9 +89,9 @@ export class MqttService {
             if (alerts.length > 0) {
                 const message =
                     `🚨 Cảnh báo cảm biến:\n` +
-                    `MQ2: ${parsedData.mq2*100/4095}+ %\n` +
-                    `MQ7: ${parsedData.mq7*100/4095}+ %\n` +
-                    `MQ135: ${parsedData.mq135*100/4095}+ %\n` +
+                    `MQ2: ${(parsedData.mq2*100/4095).toFixed(1)} %\n` +
+                    `MQ7: ${(parsedData.mq7*100/4095).toFixed(1)} %\n` +
+                    `MQ135: ${(parsedData.mq135*100/4095).toFixed(1)} %\n` +
                     `Nhiệt độ: ${parsedData.temperature}\n` +
                     `Lửa: ${parsedData.flame ? 'Có' : 'Không'}\n\n` +
                     `⚠ Tình trạng: ${alerts.join(', ')}`;
